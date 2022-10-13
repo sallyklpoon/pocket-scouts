@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/susan/AndroidStudioProjects/mobile-dev-project/app/src/main/res/layout/create_event.xml" value="0.32518115942028986" />
+        <entry key="..\:/Users/susan/AndroidStudioProjects/mobile-dev-project/app/src/main/res/layout/fragment_create_event_map.xml" value="0.32518115942028986" />
         <entry key="..\:/Users/susan/AndroidStudioProjects/mobile-dev-project/app/src/main/res/layout/user_dashboard.xml" value="0.22333333333333336" />
         <entry key="..\:/Users/susan/AndroidStudioProjects/mobile-dev-project/app/src/main/res/layout/user_layout_activity.xml" value="0.2767210144927536" />
       </map>

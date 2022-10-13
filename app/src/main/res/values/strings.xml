@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TermProject</string>
 
-<!--    User Dashboard-->
+    <!--    User Dashboard-->
     <string name="dashboard_host_rating_label">Host Rating</string>
 
     <string name="dashboard_events_attended_month">0</string>
@@ -19,6 +19,15 @@
     <string name="dashboard_edit_gender">Edit Gender</string>
 
     <string name="dashboard_save_changes_btn">Save Changes</string>
+
+    <!--    Create Event-->
+    <string name="create_event_title">Create an Event</string>
+
+    <string name="create_event_title_label">Event Title</string>
+    <string name="create_event_title_hint">Enter event title…</string>
+
+    <!--    Create Event: Map Fragment-->
+    <string name="create_event_map_placeholder">PLACEHOLDER FOR GOOGLE MAPS</string>
 
 
 </resources>
