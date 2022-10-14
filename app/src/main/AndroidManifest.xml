@@ -36,7 +36,7 @@
         </activity>
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".ExploreActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,7 +56,7 @@
         <activity
             android:name=".UserDashboardActivity"
             android:exported="true"
-            android:parentActivityName=".HomeActivity">
+            android:parentActivityName=".ExploreActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
