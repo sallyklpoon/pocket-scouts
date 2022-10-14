@@ -7,8 +7,17 @@
     <string name="already_account">Already have an account?</string>
     <string name="login">Login</string>
     <string name="welcome_back">Welcome Back, Log In!</string>
-    <string name="email_address">EMAIL ADDRESS</string>
-    <string name="password">PASSWORD</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="remember_me">Remember me</string>
+    <string name="birthday">Birthday</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="gender">Gender</string>
+    <string-array name="gender_list">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
 </resources>
