@@ -30,14 +30,14 @@ public class NavBarFragment extends Fragment {
 
         // target the navbar from inflated fragment
         BottomNavigationView navigation = view.findViewById(R.id.bottom_navigation);
-        // implement method defined from interface
-        navigation.setOnItemSelectedListener(onNavigationItemSelectedListener);
+        // set method defined from interface
+        navigation.setOnItemSelectedListener(navigateToMenuItems);
         // return the view with the correct listener method implemented
         return view;
     }
 
     // this is the custom method we want to implement to interface NavigationBarView.OnItemSelectedListener
-    private final BottomNavigationView.OnItemSelectedListener onNavigationItemSelectedListener
+    private final BottomNavigationView.OnItemSelectedListener navigateToMenuItems
             = item -> {
                 int selected = item.getItemId();
                 if (selected == R.id.nav_events) {
