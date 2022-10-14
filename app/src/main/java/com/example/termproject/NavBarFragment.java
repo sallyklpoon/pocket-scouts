@@ -56,8 +56,8 @@ public class NavBarFragment extends Fragment {
             };
 
     public void onMyEventsClick() {
-//        Intent toMyEvents = new Intent(this, );
-//        startActivity(toMyEvents);
+        Intent toMyEvents = new Intent(getActivity(), EventListActivity.class);
+        startActivity(toMyEvents);
     }
 
     public void onExploreClick() {
