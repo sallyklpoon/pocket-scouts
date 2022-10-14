@@ -1,163 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:paddingTop="30dp"
-    android:shrinkColumns="*"
-    android:stretchColumns="*"
-    android:background="#ffffff">
+    android:scrollbars="none"
+    android:layout_weight="1">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <RatingBar
-            android:id="@+id/hostRating"
-            android:contentDescription="@string/dashboard_host_rating_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"/>
-
-        <TextView
-        android:id="@+id/hostRatingLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20sp"
-        android:text="@string/dashboard_host_rating_label"
-        android:gravity="center" />
-
-    </LinearLayout>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/numEventsTotal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_events_attended_total"
-            android:textSize="30sp"
-            android:gravity="center_horizontal" />
-
-        <TextView
-            android:id="@+id/numEventsMonth"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:text="@string/dashboard_events_attended_month"
-            android:textSize="30sp" />
-
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal">
-
-        <TextView
-            android:id="@+id/numEventsMonthLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="@string/dashboard_events_attended_month_label"
-            android:gravity="center" />
-        <TextView
-            android:id="@+id/numEventsTotalLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/dashboard_events_attended_total_label"
-            android:gravity="center" />
-
-    </TableRow>
-
-    <Button
-        android:id="@+id/myEventsBtn"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="20sp"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_my_events_btn" />
-
-    <Button
-        android:id="@+id/hostEventsBtn"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="10sp"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_host_events_btn" />
-
-    <TextView
-        android:id="@+id/editInfo"
-        android:layout_marginTop="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_edit_info"
-        android:textFontWeight="500"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:gravity="start" />
-
-    <TextView
-        android:id="@+id/editNameLabel"
-        android:layout_marginTop="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_edit_name"
-        android:textFontWeight="500"
-        android:gravity="start" />
-
-    <EditText
-        android:id="@+id/editNameInput"
+    <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/dashboard_edit_name_hint"
-        android:inputType="textPersonName"
-        android:minHeight="48dp"
-        android:textColorHint="#757575" />
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="30dp"
+        android:shrinkColumns="*"
+        android:stretchColumns="*"
+        android:background="#ffffff">
 
-    <TextView
-        android:id="@+id/editDOBLabel"
-        android:layout_marginTop="20sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_edit_birthday"
-        android:textFontWeight="500"
-        android:gravity="start" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
 
-    <DatePicker
-        android:id="@+id/dobDatePicker"
-        android:contentDescription="@string/dashboard_edit_birthday"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false"
-        android:datePickerMode="spinner"
-        android:spinnersShown="true" />
+            <RatingBar
+                android:id="@+id/hostRating"
+                android:contentDescription="@string/dashboard_host_rating_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:numStars="5"/>
 
-    <TextView
-        android:id="@+id/editGenderLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_edit_gender"
-        android:textFontWeight="500"
-        android:gravity="start" />
+            <TextView
+            android:id="@+id/hostRatingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20sp"
+            android:text="@string/dashboard_host_rating_label"
+            android:gravity="center" />
 
-    <Spinner
-        android:id="@+id/editGender"
-        android:contentDescription="@string/dashboard_edit_gender"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/dashboardSaveChangesBtn"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="20sp"
-        android:layout_height="wrap_content"
-        android:text="@string/dashboard_save_changes_btn" />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
 
-</TableLayout>
+            <TextView
+                android:id="@+id/numEventsTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_events_attended_total"
+                android:textSize="30sp"
+                android:gravity="center_horizontal" />
+
+            <TextView
+                android:id="@+id/numEventsMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/dashboard_events_attended_month"
+                android:textSize="30sp" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/numEventsMonthLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="@string/dashboard_events_attended_month_label"
+                android:gravity="center" />
+            <TextView
+                android:id="@+id/numEventsTotalLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/dashboard_events_attended_total_label"
+                android:gravity="center" />
+
+        </TableRow>
+
+        <Button
+            android:id="@+id/myEventsBtn"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_my_events_btn" />
+
+        <Button
+            android:id="@+id/hostEventsBtn"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10sp"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_host_events_btn" />
+
+        <TextView
+            android:id="@+id/editInfo"
+            android:layout_marginTop="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_edit_info"
+            android:textFontWeight="500"
+            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:gravity="start" />
+
+        <TextView
+            android:id="@+id/editNameLabel"
+            android:layout_marginTop="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_edit_name"
+            android:textFontWeight="500"
+            android:gravity="start" />
+
+        <EditText
+            android:id="@+id/editNameInput"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:ems="10"
+            android:hint="@string/dashboard_edit_name_hint"
+            android:inputType="textPersonName"
+            android:minHeight="48dp"
+            android:textColorHint="#757575" />
+
+        <TextView
+            android:id="@+id/editDOBLabel"
+            android:layout_marginTop="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_edit_birthday"
+            android:textFontWeight="500"
+            android:gravity="start" />
+
+        <DatePicker
+            android:id="@+id/dobDatePicker"
+            android:contentDescription="@string/dashboard_edit_birthday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false"
+            android:datePickerMode="spinner"
+            android:spinnersShown="true" />
+
+        <TextView
+            android:id="@+id/editGenderLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_edit_gender"
+            android:textFontWeight="500"
+            android:gravity="start" />
+
+        <Spinner
+            android:id="@+id/editGender"
+            android:contentDescription="@string/dashboard_edit_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp" />
+
+        <Button
+            android:id="@+id/dashboardSaveChangesBtn"
+            android:layout_width="wrap_content"
+            android:layout_marginTop="20sp"
+            android:layout_marginBottom="20sp"
+            android:layout_height="wrap_content"
+            android:text="@string/dashboard_save_changes_btn" />
+    </TableLayout>
+</ScrollView>

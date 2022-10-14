@@ -1,17 +1,15 @@
 package com.example.termproject;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,27 +25,35 @@ public class NavBarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_navbar, container, false);
+
+        final View view = inflater.inflate(R.layout.fragment_navbar, container, false);
+
+        // target the navbar from inflated fragment
+        BottomNavigationView navigation = view.findViewById(R.id.bottom_navigation);
+        // set method defined from interface
+        navigation.setOnItemSelectedListener(navigateToMenuItems);
+        // return the view with the correct listener method implemented
+        return view;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        int selected = menuItem.getItemId();
-        if (selected == R.id.nav_events) {
-            onMyEventsClick();
-            return true;
-        }
-        if (selected == R.id.nav_explore) {
-            onExploreClick();
-            return true;
-        }
-        if (selected == R.id.nav_profile) {
-            Log.d("CLICKED", "CLICKED");
-            onProfileClick();
-            return true;
-        }
-        return false;
-    }
+    // this is the custom method we want to implement to interface NavigationBarView.OnItemSelectedListener
+    private final BottomNavigationView.OnItemSelectedListener navigateToMenuItems
+            = item -> {
+                int selected = item.getItemId();
+                if (selected == R.id.nav_events) {
+                    onMyEventsClick();
+                    return true;
+                }
+                if (selected == R.id.nav_explore) {
+                    onExploreClick();
+                    return true;
+                }
+                if (selected == R.id.nav_profile) {
+                    onProfileClick();
+                    return true;
+                }
+                return false;
+            };
 
     public void onMyEventsClick() {
 //        Intent toMyEvents = new Intent(this, );
