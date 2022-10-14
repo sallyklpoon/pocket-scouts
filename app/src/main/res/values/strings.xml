@@ -9,6 +9,7 @@
     <string name="nav_profile_label">Profile</string>
     <string name="location_search_hint">Where to?</string>
 
+
     <!--    User Dashboard-->
     <string name="dashboard_host_rating_label">Host Rating</string>
 
@@ -48,6 +49,5 @@
     <!--    Create Event: Map Fragment-->
     <string name="create_event_map_placeholder">PLACEHOLDER FOR GOOGLE MAPS</string>
 
-
+    <string name="title_event">Your Events</string>
 </resources>
-
