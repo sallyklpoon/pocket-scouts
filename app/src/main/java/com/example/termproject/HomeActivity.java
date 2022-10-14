@@ -3,21 +3,27 @@ package com.example.termproject;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class EventListActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
     private ArrayList<Event> eventList;
     private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_events);
-        recyclerView = findViewById(R.id.eventPageRecyclerView);
+        setContentView(R.layout.explore_activity);
+
+        Fragment mapFragment = new MapsFragment();
+        getSupportFragmentManager()
+                .beginTransaction().replace(R.id.map_frame_layout, mapFragment).commit();
+
+        recyclerView = findViewById(R.id.homePageRecyclerView);
         eventList = new ArrayList<>();
 
         setupEventInfo();
@@ -33,14 +39,6 @@ public class EventListActivity extends AppCompatActivity {
     }
 
     private void setupEventInfo() {
-        this.eventList = getDummyEvents();
-    }
-
-    public static ArrayList<Event> getDummyEvents() {
-        ArrayList<Event> dummy = new ArrayList<>();
-        dummy.add(new Event("title 1", "asdfg"));
-        dummy.add(new Event("title 2", "sad"));
-        dummy.add(new Event("title 3", "thumbsupcathappy"));
-        return dummy;
+        this.eventList = EventListActivity.getDummyEvents();
     }
 }

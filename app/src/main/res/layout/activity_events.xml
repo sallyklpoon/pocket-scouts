@@ -16,7 +16,7 @@
         tools:layout_editor_absoluteY="55dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/eventPageRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
