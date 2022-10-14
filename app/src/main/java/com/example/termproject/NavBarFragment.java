@@ -1,17 +1,22 @@
 package com.example.termproject;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,27 +32,30 @@ public class NavBarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_navbar, container, false);
+        final View v = inflater.inflate(R.layout.fragment_navbar, container, false);
+
+        BottomNavigationView navigation = v.findViewById(R.id.bottom_navigation);
+        navigation.setOnItemSelectedListener(mOnNavigationItemSelectedListener);
+        return v;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem menuItem) {
-        int selected = menuItem.getItemId();
-        if (selected == R.id.nav_events) {
-            onMyEventsClick();
-            return true;
-        }
-        if (selected == R.id.nav_explore) {
-            onExploreClick();
-            return true;
-        }
-        if (selected == R.id.nav_profile) {
-            Log.d("CLICKED", "CLICKED");
-            onProfileClick();
-            return true;
-        }
-        return false;
-    }
+    private final BottomNavigationView.OnItemSelectedListener mOnNavigationItemSelectedListener
+            = item -> {
+                int selected = item.getItemId();
+                if (selected == R.id.nav_events) {
+                    onMyEventsClick();
+                    return true;
+                }
+                if (selected == R.id.nav_explore) {
+                    onExploreClick();
+                    return true;
+                }
+                if (selected == R.id.nav_profile) {
+                    onProfileClick();
+                    return true;
+                }
+                return false;
+            };
 
     public void onMyEventsClick() {
 //        Intent toMyEvents = new Intent(this, );
