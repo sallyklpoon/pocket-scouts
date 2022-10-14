@@ -1,29 +1,28 @@
 package com.example.termproject;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-
-public class MainActivity extends AppCompatActivity {
+public class ExploreActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.explore_activity);
+
+        // Add map
+        Fragment mapFragment = new MapsFragment();
+        getSupportFragmentManager()
+                .beginTransaction().replace(R.id.map_frame_layout, mapFragment).commit();
 
         // Add the navbar
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.nav_fragment, NavBarFragment.class, null);
         fragmentTransaction.commit();
-    }
-
-    public void toHomePage(View view) {
-        Intent intent = new Intent(this, ExploreActivity.class);
-        startActivity(intent);
     }
 }

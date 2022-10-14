@@ -61,8 +61,8 @@ public class NavBarFragment extends Fragment {
     }
 
     public void onExploreClick() {
-//        Intent toExplore = new Intent(this, );
-//        startActivity(toExplore);
+        Intent toExplore = new Intent(getActivity(), ExploreActivity.class);
+        startActivity(toExplore);
     }
 
     public void onProfileClick() {

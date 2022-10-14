@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <FrameLayout
             android:id="@+id/map_frame_layout"
             android:layout_width="match_parent"
@@ -53,8 +49,16 @@
             </LinearLayout>
         </ScrollView>
 
+        <!-- Nav Bar fragment -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/nav_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"/>
+
     </FrameLayout>
-
-
-</RelativeLayout>
 
