@@ -99,6 +99,7 @@
             android:paddingHorizontal="80dp"
             android:textColor="#fff"
             android:layout_gravity="center"
+            android:onClick="loginHandler"
             />
     </LinearLayout>
 </GridLayout>
