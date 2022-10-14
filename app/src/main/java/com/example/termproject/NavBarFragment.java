@@ -32,14 +32,19 @@ public class NavBarFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        final View v = inflater.inflate(R.layout.fragment_navbar, container, false);
 
-        BottomNavigationView navigation = v.findViewById(R.id.bottom_navigation);
-        navigation.setOnItemSelectedListener(mOnNavigationItemSelectedListener);
-        return v;
+        final View view = inflater.inflate(R.layout.fragment_navbar, container, false);
+
+        // target the navbar from inflated fragment
+        BottomNavigationView navigation = view.findViewById(R.id.bottom_navigation);
+        // implement method defined from interface
+        navigation.setOnItemSelectedListener(onNavigationItemSelectedListener);
+        // return the view with the correct listener method implemented
+        return view;
     }
 
-    private final BottomNavigationView.OnItemSelectedListener mOnNavigationItemSelectedListener
+    // this is the custom method we want to implement to interface NavigationBarView.OnItemSelectedListener
+    private final BottomNavigationView.OnItemSelectedListener onNavigationItemSelectedListener
             = item -> {
                 int selected = item.getItemId();
                 if (selected == R.id.nav_events) {
