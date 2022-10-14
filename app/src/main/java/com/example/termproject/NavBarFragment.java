@@ -1,10 +1,12 @@
 package com.example.termproject;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -40,6 +42,7 @@ public class NavBarFragment extends Fragment {
             return true;
         }
         if (selected == R.id.nav_profile) {
+            Log.d("CLICKED", "CLICKED");
             onProfileClick();
             return true;
         }
@@ -57,7 +60,7 @@ public class NavBarFragment extends Fragment {
     }
 
     public void onProfileClick() {
-//        Intent toProfile = new Intent(this, );
-//        startActivity(toProfile);
+        Intent toProfile = new Intent(getActivity(), UserDashboardActivity.class);
+        startActivity(toProfile);
     }
 }
