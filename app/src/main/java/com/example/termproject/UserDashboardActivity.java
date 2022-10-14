@@ -1,34 +1,33 @@
 package com.example.termproject;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-
-public class MainActivity extends AppCompatActivity {
+public class UserDashboardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-      // Add the navbar
+        setContentView(R.layout.user_dashboard);
+        goToCreateEvent();
+
+        // Add the navbar
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.nav_fragment, NavBarFragment.class, null);
         fragmentTransaction.commit();
-        Intent intent = new Intent(this, AuthSplash.class);
-        startActivity(intent);
-
-        
     }
 
-    public void toHomePage(View view) {
-        Intent intent = new Intent(this, ExploreActivity.class);
-        startActivity(intent);
+    private void goToCreateEvent() {
+        Button eventsBtn = findViewById(R.id.hostEventsBtn);
+        Intent goToCreateEvent = new Intent(this, CreateEventActivity.class);
+
+        eventsBtn.setOnClickListener(view -> startActivity(goToCreateEvent));
     }
+
 }

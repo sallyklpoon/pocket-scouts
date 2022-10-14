@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_weight="1"
+    >
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none"
+        android:padding="30sp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/createEvent"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_title"
+                android:textFontWeight="500"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:gravity="start" />
+
+            <TextView
+                android:id="@+id/eventTitleLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_title_label"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+            <EditText
+                android:id="@+id/eventTitleInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/create_event_title_hint"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:textColorHint="#757575" />
+
+            <FrameLayout
+                android:id="@+id/map_frame_layout"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/eventLocationLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_address_label"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/create_event_address_hint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="15sp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:hint="@string/create_event_address_hint"
+                    android:inputType="textPersonName"
+                    android:minHeight="48dp"
+                    android:textColorHint="#757575" />
+
+                <Button
+                    android:id="@+id/saveChangesBtn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="50sp"
+                    android:text="@string/create_event_address_btn" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/eventDateLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_date_label"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+            <DatePicker
+                android:id="@+id/eventDatePicker"
+                android:contentDescription="@string/create_event_date_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:calendarViewShown="false"
+                android:datePickerMode="spinner"
+                android:spinnersShown="true"
+                android:layout_gravity="center"/>
+
+            <TextView
+                android:id="@+id/eventAttendeesLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_attendees_label"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+            <Spinner
+                android:id="@+id/editGender"
+                android:contentDescription="@string/create_event_attendees_label"
+                android:layout_width="fill_parent"
+                android:layout_height="48dp" />
+
+            <TextView
+                android:id="@+id/eventDescriptionLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_description_label"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+            <EditText
+                android:id="@+id/eventDescriptionTextArea"
+                android:layout_width="match_parent"
+                android:hint="@string/create_event_description_hint"
+                android:layout_height="150dp"
+                android:inputType="text|textMultiLine"
+                android:gravity="top"
+                android:importantForAutofill="no" />
+
+            <Button
+                android:id="@+id/eventsSaveChangesBtn"
+                android:layout_width="match_parent"
+                android:layout_marginTop="20sp"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_save_changes_btn" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Nav Bar fragment -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
