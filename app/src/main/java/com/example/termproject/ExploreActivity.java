@@ -7,13 +7,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-public class CreateEventActivity extends AppCompatActivity {
+public class ExploreActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_event);
+        setContentView(R.layout.explore_activity);
 
+        // Add map
         Fragment mapFragment = new MapsFragment();
         getSupportFragmentManager()
                 .beginTransaction().replace(R.id.map_frame_layout, mapFragment).commit();

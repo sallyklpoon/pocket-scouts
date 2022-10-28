@@ -6,18 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/homepage_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HomePage"
-        android:onClick="toHomePage"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.259" />
-
     <!-- Nav Bar fragment -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_fragment"

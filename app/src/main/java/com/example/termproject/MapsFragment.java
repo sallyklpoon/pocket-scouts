@@ -32,7 +32,7 @@ public class MapsFragment extends Fragment {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             LatLng tokyo = new LatLng(35.6620, 139.7038);
-            googleMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Sydney"));
+            googleMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Shibuya"));
             float zoomLevel = 12.0f;  // value goes up to 21
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, zoomLevel));
         }
