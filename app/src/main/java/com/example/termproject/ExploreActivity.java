@@ -19,6 +19,11 @@ public class ExploreActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction().replace(R.id.map_frame_layout, mapFragment).commit();
 
+        // Add event list
+        EventListFragment eventListFragment = new EventListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.event_list_fragment, eventListFragment).commit();
+
         // Add the navbar
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

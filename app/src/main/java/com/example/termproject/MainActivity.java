@@ -23,8 +23,6 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
         Intent intent = new Intent(this, AuthSplash.class);
         startActivity(intent);
-
-        
     }
 
     public void toHomePage(View view) {
