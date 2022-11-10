@@ -17,11 +17,5 @@ public class CreateEventActivity extends AppCompatActivity {
         Fragment mapFragment = new MapsFragment();
         getSupportFragmentManager()
                 .beginTransaction().replace(R.id.map_frame_layout, mapFragment).commit();
-
-        // Add the navbar
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.nav_fragment, NavBarFragment.class, null);
-        fragmentTransaction.commit();
     }
 }

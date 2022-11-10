@@ -15,12 +15,6 @@ public class UserDashboardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_dashboard);
         goToCreateEvent();
-
-        // Add the navbar
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.nav_fragment, NavBarFragment.class, null);
-        fragmentTransaction.commit();
     }
 
     private void goToCreateEvent() {

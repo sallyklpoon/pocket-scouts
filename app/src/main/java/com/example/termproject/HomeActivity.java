@@ -17,7 +17,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.explore_activity);
+        setContentView(R.layout.fragment_explore);
 
         Fragment mapFragment = new MapsFragment();
         getSupportFragmentManager()

@@ -20,12 +20,6 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events);
 
-        // Add the navbar
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.event_nav_fragment, NavBarFragment.class, null);
-        fragmentTransaction.commit();
-
         recyclerView = findViewById(R.id.eventPageRecyclerView);
         eventList = new ArrayList<>();
 
