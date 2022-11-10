@@ -10,8 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:padding="30sp">
+        android:scrollbars="none">
 
         <TableLayout
             android:layout_width="fill_parent"
@@ -36,12 +35,12 @@
                     android:numStars="5"/>
 
                 <TextView
-                android:id="@+id/hostRatingLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20sp"
-                android:text="@string/dashboard_host_rating_label"
-                android:gravity="center" />
+                    android:id="@+id/hostRatingLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20sp"
+                    android:text="@string/dashboard_host_rating_label"
+                    android:gravity="center" />
 
             </LinearLayout>
 
