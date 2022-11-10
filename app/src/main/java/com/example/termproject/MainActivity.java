@@ -17,13 +17,6 @@ public class MainActivity extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Add the navbar
-//        FragmentManager fragmentManager = getSupportFragmentManager();
-//        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.add(R.id.nav_fragment, NavBarFragment.class, null);
-//        fragmentTransaction.commit();
-//        Intent intent = new Intent(this, AuthSplash.class);
-//        startActivity(intent);
 
         bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(navigateToMenuItems);
@@ -38,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment selectedFragment = null;
         int selectedIconId = R.id.nav_explore;
         int selected = item.getItemId();
+
         if (selected == R.id.nav_events) {
             selectedFragment = new EventFragment();
             selectedIconId = R.id.nav_events;
@@ -54,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     };
 
-    private final void navigateToFragment(Fragment fragment, int navId) {
+    private void navigateToFragment(Fragment fragment, int navId) {
         bottomNav.getMenu().findItem(navId).setChecked(true);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.page_fragment_container, fragment).commit();

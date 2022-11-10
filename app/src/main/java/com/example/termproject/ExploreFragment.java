@@ -23,14 +23,17 @@ public class ExploreFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_explore, container, false);
+        inflater.inflate(R.layout.fragment_explore, container, false);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // Inflate mapFragment
         Fragment mapFragment = new MapsFragment();
-        getChildFragmentManager().beginTransaction().replace(R.id.map_frame_layout, mapFragment).commit();
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.map_frame_layout, mapFragment).commit();
     }
 }

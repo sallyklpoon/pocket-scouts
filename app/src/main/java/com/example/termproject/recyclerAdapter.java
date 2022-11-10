@@ -10,13 +10,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyViewHolder>{
-    private ArrayList<Event> eventList;
+    private final ArrayList<Event> eventList;
 
     public recyclerAdapter(ArrayList<Event> events) {
         this.eventList = events;
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         TextView titleText;
         TextView descriptionText;
 
