@@ -42,12 +42,15 @@
     <string name="dashboard_host_events_btn">Host an Event</string>
 
     <string name="dashboard_edit_info">Edit Information</string>
+    <string name="dashboard_verify_id_false">Your ID has not been verified.</string>
+    <string name="dashboard_verify_id_true">Your ID has already been verified.</string>
     <string name="dashboard_edit_name">Edit Name</string>
     <string name="dashboard_edit_name_hint">Enter new name…</string>
     <string name="dashboard_edit_birthday">Edit Birthday</string>
     <string name="dashboard_edit_gender">Edit Gender</string>
 
     <string name="dashboard_save_changes_btn">Save Changes</string>
+    <string name="dashboard_upload_id_btn">Verify Your ID</string>
 
     <!--    Create Event-->
     <string name="create_event_title">Create an Event</string>
