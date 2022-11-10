@@ -107,7 +107,7 @@ public class ProfileFragment extends Fragment {
                             requireActivity(), "Your ID has been uploaded",
                             Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(e -> {
-                        Toast.makeText(requireActivity().getApplicationContext(),
+                        Toast.makeText(requireActivity(),
                                 "Upload failed, please try again!" + e.getMessage(),
                                 Toast.LENGTH_SHORT).show();
                     });
