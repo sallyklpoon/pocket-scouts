@@ -51,6 +51,11 @@
     <string name="dashboard_save_changes_btn">Save Changes</string>
     <string name="dashboard_signout_btn">Sign Out</string>
 
+    <!-- weather -->
+
+    <string name="weather_placeholder">"Fetching local temperature..."</string>
+    <string name="weather_error">"Error fetching temperature."</string>
+
     <!--    Create Event-->
     <string name="create_event_title">Create an Event</string>
 
