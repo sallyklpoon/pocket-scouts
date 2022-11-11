@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:columnCount="1"
     android:rowCount="2"
-    tools:context=".AuthSplash">
-
+    tools:context=".AuthFragment">
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_app_logo"
         android:layout_width="300dp"
@@ -49,29 +48,28 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_continue_google"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/continue_google"
             app:icon="@drawable/google_logo_icon"
+            android:layout_marginHorizontal="50dp"
             android:textAllCaps="false"
-            android:paddingHorizontal="50dp"
             android:layout_marginTop="30dp"
             android:backgroundTint="@color/red_google"
             />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_email"
-            android:layout_width="wrap_content"
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/email_signup"
+            android:layout_marginHorizontal="50dp"
             android:textAllCaps="false"
             android:layout_marginTop="5dp"
-            android:paddingHorizontal="40dp"
             style="?attr/materialButtonOutlinedStyle"
             app:strokeColor="#777"
             app:strokeWidth="2dp"
             android:textColor="#777"
-            android:onClick="launchEmailSignup"
             />
 
         <LinearLayout
@@ -126,17 +124,11 @@
                 android:text="@string/already_account" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/signup_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue_link"
-                android:onClick="login"
-                android:text="@string/login" />
+                android:text="@string/sign_up" />
         </LinearLayout>
-
-
     </LinearLayout>
-
-
-
 </GridLayout>

@@ -170,9 +170,16 @@
                 android:id="@+id/dashboardSaveChangesBtn"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="20sp"
-                android:layout_marginBottom="20sp"
+                android:layout_marginBottom="10sp"
                 android:layout_height="wrap_content"
                 android:text="@string/dashboard_save_changes_btn" />
+
+            <Button
+                android:id="@+id/dashboardSignOutBtn"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="20sp"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_signout_btn" />
         </TableLayout>
     </ScrollView>
 

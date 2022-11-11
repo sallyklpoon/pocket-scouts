@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +27,7 @@ public class ProfileFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private FirebaseAuth firebaseAuth;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -61,9 +63,9 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        firebaseAuth = FirebaseAuth.getInstance();
         // Inflate the layout for this fragment
         View thisView = inflater.inflate(R.layout.fragment_profile, container, false);
-
         // Set onClick Listener for Create Event
         Button hostEventBtn = thisView.findViewById(R.id.hostEventsBtn);
         hostEventBtn.setOnClickListener((View view) -> getParentFragmentManager().beginTransaction()
@@ -79,6 +81,11 @@ public class ProfileFragment extends Fragment {
                         getActivity().findViewById(R.id.bottom_navigation);
                 bottomNavigationView.getMenu().findItem(R.id.nav_events).setChecked(true);
             }
+        });
+        Button signOutButton = thisView.findViewById(R.id.dashboardSignOutBtn);
+        signOutButton.setOnClickListener((View view) -> {
+            firebaseAuth.signOut();
+            ((MainActivity) getActivity()).renderAuthentication();
         });
 
         return thisView;
