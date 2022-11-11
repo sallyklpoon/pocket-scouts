@@ -20,4 +20,11 @@
         android:icon="@drawable/ic_profile"
         android:title="@string/nav_profile_label"
         />
+    <item
+        android:id="@+id/nav_auth"
+        android:enabled="true"
+        android:icon="@drawable/ic_profile"
+        android:title="@string/nav_auth_label"
+        android:visible="false"
+        />
 </menu>
