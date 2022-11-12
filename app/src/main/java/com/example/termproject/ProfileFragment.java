@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,7 @@ public class ProfileFragment extends Fragment {
     private StorageReference storage;
     private FirebaseFirestore db;
     private final int PICK_IMAGE_REQUEST = 22;
+    private FirebaseAuth firebaseAuth;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -50,9 +52,9 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        firebaseAuth = FirebaseAuth.getInstance();
         // Inflate the layout for this fragment
         View thisView = inflater.inflate(R.layout.fragment_profile, container, false);
-
         // Set onClick Listener for Create Event
         Button hostEventBtn = thisView.findViewById(R.id.hostEventsBtn);
         hostEventBtn.setOnClickListener((View view) -> getParentFragmentManager().beginTransaction()
@@ -69,8 +71,13 @@ public class ProfileFragment extends Fragment {
                 bottomNavigationView.getMenu().findItem(R.id.nav_events).setChecked(true);
             }
         });
+        Button signOutButton = thisView.findViewById(R.id.dashboardSignOutBtn);
+        signOutButton.setOnClickListener((View view) -> {
+            firebaseAuth.signOut();
+            ((MainActivity) getActivity()).renderAuthentication();
+        });
 
-        // Listener fot image upload
+        // Listener for image upload
         Button imageUploadBtn = thisView.findViewById(R.id.dashboardIdVerificationBtn);
         imageUploadBtn.setOnClickListener(view -> selectAndUploadImage());
 

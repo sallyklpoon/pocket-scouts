@@ -4,7 +4,7 @@
     <string name="journey">Start your Journey today!</string>
     <string name="continue_google">Continue with Google</string>
     <string name="email_signup">I\'ll use email or phone</string>
-    <string name="already_account">Already have an account?</string>
+    <string name="already_account">Need an account?</string>
     <string name="login">Login</string>
     <string name="welcome_back">Welcome Back, Log In!</string>
     <string name="email_address">Email Address</string>
@@ -27,6 +27,7 @@
     <string name="nav_events_label">My Events</string>
     <string name="nav_explore_label">Explore</string>
     <string name="nav_profile_label">Profile</string>
+    <string name="nav_auth_label">Auth</string>
     <string name="location_search_hint">Where to?</string>
 
 
@@ -50,6 +51,12 @@
     <string name="dashboard_edit_gender">Edit Gender</string>
 
     <string name="dashboard_save_changes_btn">Save Changes</string>
+    <string name="dashboard_signout_btn">Sign Out</string>
+
+    <!-- weather -->
+
+    <string name="weather_placeholder">"Fetching local temperature..."</string>
+    <string name="weather_error">"Error fetching temperature."</string>
     <string name="dashboard_upload_id_btn">Verify Your ID</string>
 
     <!--    Create Event-->
@@ -75,4 +82,6 @@
     <string name="title_event">Your Events</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
+
+    <string name="web_client_id">74407383316-s9qqbmlc623hfsgva8ts63u9gd9rblu1.apps.googleusercontent.com</string>
 </resources>

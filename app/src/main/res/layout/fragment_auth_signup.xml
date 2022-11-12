@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:columnCount="1"
     android:rowCount="2"
-    tools:context=".AuthSignup">
+    tools:context=".AuthSignupFragment">
 
     <TextView
         android:id="@+id/text_welcome"
@@ -146,7 +146,7 @@
         </GridLayout>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_login"
+            android:id="@+id/button_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sign_up"
@@ -154,6 +154,7 @@
             android:layout_marginTop="30dp"
             android:paddingHorizontal="80dp"
             android:textColor="#fff"
+            android:backgroundTint="@color/red_google"
             android:layout_gravity="center"
             />
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:columnCount="1"
     android:rowCount="2"
-    tools:context=".AuthLogin">
+    tools:context=".AuthLoginFragment">
 
     <TextView
         android:id="@+id/text_welcome"
@@ -98,8 +98,8 @@
             android:layout_marginTop="30dp"
             android:paddingHorizontal="80dp"
             android:textColor="#fff"
+            android:backgroundTint="@color/red_google"
             android:layout_gravity="center"
-            android:onClick="loginHandler"
             />
     </LinearLayout>
 </GridLayout>
