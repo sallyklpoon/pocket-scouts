@@ -5,29 +5,24 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class ProfileFragment extends Fragment {
@@ -71,15 +66,16 @@ public class ProfileFragment extends Fragment {
                 bottomNavigationView.getMenu().findItem(R.id.nav_events).setChecked(true);
             }
         });
+
+        // Listener for image upload
+        Button imageUploadBtn = thisView.findViewById(R.id.dashboardIdVerificationBtn);
+        imageUploadBtn.setOnClickListener(view -> selectAndUploadImage());
+
         Button signOutButton = thisView.findViewById(R.id.dashboardSignOutBtn);
         signOutButton.setOnClickListener((View view) -> {
             firebaseAuth.signOut();
             ((MainActivity) getActivity()).renderAuthentication();
         });
-
-        // Listener for image upload
-        Button imageUploadBtn = thisView.findViewById(R.id.dashboardIdVerificationBtn);
-        imageUploadBtn.setOnClickListener(view -> selectAndUploadImage());
 
         return thisView;
     }
@@ -110,9 +106,15 @@ public class ProfileFragment extends Fragment {
         if (filePath != null) {
             StorageReference ref = storage.child(UUID.randomUUID().toString());
             ref.putFile(filePath)
-                    .addOnSuccessListener(taskSnapshot -> Toast.makeText(
-                            requireActivity(), "Your ID has been uploaded",
-                            Toast.LENGTH_SHORT).show())
+                    .addOnSuccessListener(
+                            taskSnapshot -> {
+                                Activity activity = getActivity();
+                                if(activity != null) {
+                                    Toast.makeText(
+                                            requireActivity(), "Your ID has been uploaded",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            })
                     .addOnFailureListener(e -> {
                         Toast.makeText(requireActivity(),
                                 "Upload failed, please try again!" + e.getMessage(),
