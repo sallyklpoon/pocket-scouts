@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(navigateToMenuItems);
         mAuth = FirebaseAuth.getInstance();
+        renderUI();
     }
 
     @Override
@@ -39,9 +40,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
             renderAuthentication();
-        } else {
-            System.out.println(currentUser.getEmail());
-            renderUI();
         }
     }
 
