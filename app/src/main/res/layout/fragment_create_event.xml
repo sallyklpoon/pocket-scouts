@@ -85,7 +85,7 @@
                     android:textColorHint="#757575" />
 
                 <Button
-                    android:id="@+id/saveChangesBtn"
+                    android:id="@+id/findBtn"
                     android:layout_width="fill_parent"
                     android:layout_height="50sp"
                     android:text="@string/create_event_address_btn" />
