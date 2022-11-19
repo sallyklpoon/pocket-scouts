@@ -17,20 +17,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Date;
 import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link EventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
 public class EventFragment extends Fragment {
@@ -38,10 +38,11 @@ public class EventFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     Context context;
+    private Task<Void> allTask;
 
     private ArrayList<Event> eventList;
     private RecyclerView recyclerView;
-    private ArrayList<Map<String, Object>> usersEvents = new ArrayList<>();
+    private ArrayList<Event> userEvents = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,27 +59,20 @@ public class EventFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        setupDummyEventInfo();
-        getUserEvents();
-        Log.e("ALL EVENTS", String.valueOf(usersEvents));
+        loadUserEvents(view);
 
-        recyclerAdapter adapter = new recyclerAdapter(this.eventList);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
         return view;
     }
 
-    private void setupDummyEventInfo() {
-        this.eventList = getDummyEvents();
-    }
+    private void loadUserEvents(View view) {
+        // To test the code, uncomment the mockUserId and substitute
+        // userId variable with mockUserId in eventConfirmationQuery
+        // String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
 
-    private void getUserEvents() {
         String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
+        ArrayList<String> eventIds = new ArrayList<>();
 
-        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", mockUserId);
+        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", userId);
 
         eventConfirmationQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -86,19 +80,10 @@ public class EventFragment extends Fragment {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document: task.getResult()) {
                         String eventId = Objects.requireNonNull(document.getData().get("event_id")).toString();
-
-                        db.collection("event").document(eventId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    usersEvents.add(task.getResult().getData());
-                                    Log.e("EVENT DETAILS", String.valueOf(task.getResult().getData()));
-                                } else {
-                                    Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+                        eventIds.add(eventId);
                     }
+                    Log.e("EVENT IDS", eventIds.toString());
+                    findEventsById(eventIds, view);
                 } else {
                     Log.e("ERROR RETRIEVING USER'S EVENTS", String.valueOf(task.getException()));
                     Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
@@ -107,12 +92,35 @@ public class EventFragment extends Fragment {
         });
     }
 
+    private void findEventsById(ArrayList<String> eventIds, View view) {
 
-    public static ArrayList<Event> getDummyEvents() {
-        ArrayList<Event> dummy = new ArrayList<>();
-        dummy.add(new Event("title 1", "asdfg"));
-        dummy.add(new Event("title 2", "sad"));
-        dummy.add(new Event("title 3", "thumbsupcathappy"));
-        return dummy;
+        Query allEventsQuery = db.collection("event").whereIn(FieldPath.documentId(), eventIds);
+
+        allEventsQuery.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document: task.getResult()) {
+                    String id = document.getId();
+                    String name = (String) document.get("name");
+                    String description = (String) document.get("description");
+                    Date date = ((Timestamp) Objects.requireNonNull(document.get("date"))).toDate();
+                    ArrayList<Double> location = (ArrayList<Double>) document.get("location");
+                    String hostId = (String) document.get("host_id");
+                    Long attendeeLimit = (Long) document.get("attendee_limit");
+
+                    Event event = new Event(id, name, description, date, location, hostId, attendeeLimit);
+                    userEvents.add(event);
+                    Log.e("HAHAHAH", userEvents.toString());
+                };
+                loadUserEventCardsRecycler(view);
+            }
+        });
+    }
+
+    private void loadUserEventCardsRecycler(View view) {
+        recyclerAdapter adapter = new recyclerAdapter(this.userEvents);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
     }
 }
