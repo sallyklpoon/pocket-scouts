@@ -101,10 +101,6 @@ public class ExploreFragment extends Fragment {
         }
     }
 
-    private boolean permissionGranted(String permission) {
-        return ActivityCompat.checkSelfPermission(requireActivity(), permission) == PackageManager.PERMISSION_GRANTED;
-    }
-
     private class AsyncTaskRunner extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
