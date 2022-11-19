@@ -92,8 +92,8 @@ public class ExploreFragment extends Fragment {
     private class AsyncTaskRunner extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
-            Log.e("Weather Latitude", String.valueOf(latitude));
-            Log.e("Weather Longitude", String.valueOf(longitude));
+//            Log.e("Weather Latitude", String.valueOf(latitude));
+//            Log.e("Weather Longitude", String.valueOf(longitude));
 
             String tempUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude +
                     "&longitude=" + longitude + "&current_weather=true";

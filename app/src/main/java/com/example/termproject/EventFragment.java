@@ -1,17 +1,32 @@
 package com.example.termproject;
 
+import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,41 +35,17 @@ import java.util.ArrayList;
  */
 public class EventFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore db;
+    Context context;
 
     private ArrayList<Event> eventList;
     private RecyclerView recyclerView;
-
-    public EventFragment() { }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment EventFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static EventFragment newInstance(String param1, String param2) {
-        EventFragment fragment = new EventFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private ArrayList<Map<String, Object>> usersEvents = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-//            eventList = getArguments().getString(ARG_PARAM1);
-//            recyclerView = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -63,8 +54,13 @@ public class EventFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event, container, false);
         recyclerView = view.findViewById(R.id.eventPageRecyclerView);
+        context = getContext();
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
-        setupEventInfo();
+        setupDummyEventInfo();
+        getUserEvents();
+        Log.e("ALL EVENTS", String.valueOf(usersEvents));
 
         recyclerAdapter adapter = new recyclerAdapter(this.eventList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
@@ -74,8 +70,41 @@ public class EventFragment extends Fragment {
         return view;
     }
 
-    private void setupEventInfo() {
+    private void setupDummyEventInfo() {
         this.eventList = getDummyEvents();
+    }
+
+    private void getUserEvents() {
+        String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+        String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
+
+        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", mockUserId);
+
+        eventConfirmationQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (QueryDocumentSnapshot document: task.getResult()) {
+                        String eventId = Objects.requireNonNull(document.getData().get("event_id")).toString();
+
+                        db.collection("event").document(eventId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    usersEvents.add(task.getResult().getData());
+                                    Log.e("EVENT DETAILS", String.valueOf(task.getResult().getData()));
+                                } else {
+                                    Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Log.e("ERROR RETRIEVING USER'S EVENTS", String.valueOf(task.getException()));
+                    Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
