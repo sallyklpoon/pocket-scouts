@@ -194,12 +194,17 @@
                 android:layout_width="wrap_content"
                 android:layout_marginTop="20sp"
                 android:layout_marginBottom="10sp"
+                android:backgroundTint="@color/purple_700"
                 android:layout_height="wrap_content"
                 android:text="@string/dashboard_save_changes_btn" />
 
             <Button
                 android:id="@+id/dashboardSignOutBtn"
                 android:layout_width="wrap_content"
+                app:backgroundTint="@android:color/transparent"
+                app:strokeColor="@color/purple_700"
+                app:strokeWidth="2dp"
+                android:textColor="@color/purple_700"
                 android:layout_marginBottom="20sp"
                 android:layout_height="wrap_content"
                 android:text="@string/dashboard_signout_btn" />
