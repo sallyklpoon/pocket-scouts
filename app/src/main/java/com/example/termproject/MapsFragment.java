@@ -18,6 +18,33 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsFragment extends Fragment {
 
+    private static final String FOCUS_LAT_PARAM = "param2";
+    private static final String FOCUS_LONG_PARAM = "param1";
+
+    private double focus_lat;
+    private double focus_long;
+
+    public MapsFragment() {}
+
+    public static MapsFragment newInstance(double init_lat, double init_long) {
+        MapsFragment fragment = new MapsFragment();
+        Bundle args = new Bundle();
+        args.putDouble(FOCUS_LAT_PARAM, init_lat);
+        args.putDouble(FOCUS_LONG_PARAM, init_long);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            focus_lat = getArguments().getDouble(FOCUS_LAT_PARAM);
+            focus_long = getArguments().getDouble(FOCUS_LONG_PARAM);
+        }
+    }
+
     private final OnMapReadyCallback callback = new OnMapReadyCallback() {
 
         /**
@@ -31,10 +58,10 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng tokyo = new LatLng(35.6620, 139.7038);
-            googleMap.addMarker(new MarkerOptions().position(tokyo).title("Marker in Shibuya"));
+            LatLng location = new LatLng(focus_lat, focus_long);
+            googleMap.addMarker(new MarkerOptions().position(location).title("Marker in Shibuya"));
             float zoomLevel = 12.0f;  // value goes up to 21
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(tokyo, zoomLevel));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
         }
     };
 
