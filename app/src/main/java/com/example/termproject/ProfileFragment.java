@@ -75,7 +75,8 @@ public class ProfileFragment extends Fragment {
 
         Button hostEventBtn = thisView.findViewById(R.id.hostEventsBtn);
         hostEventBtn.setOnClickListener((View view) -> getParentFragmentManager().beginTransaction()
-                .replace(R.id.page_fragment_container, new CreateEventFragment()).commit());
+                .replace(R.id.page_fragment_container, new CreateEventFragment())
+                .addToBackStack(null).commit());
 
         Button myEventsBtn = thisView.findViewById(R.id.myEventsBtn);
         myEventsBtn.setOnClickListener((View view) -> {

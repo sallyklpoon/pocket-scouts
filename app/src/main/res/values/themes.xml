@@ -11,5 +11,11 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" >?attr/colorPrimaryVariant</item>
+        <item name="colorSurface">@color/orange_light</item>
+    </style>
+
+    <style name="Widget.App.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="colorSurface">@color/orange_light</item>
+        <item name="colorOnSurface">@color/orange_500</item>
     </style>
 </resources>

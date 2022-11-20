@@ -67,7 +67,7 @@
     <string name="create_event_title_hint">Enter event title…</string>
 
     <string name="create_event_address_label">Event Location</string>
-    <string name="create_event_address_hint">Enter address…</string>
+    <string name="create_event_address_hint">Enter a location…</string>
     <string name="create_event_address_btn">Find</string>
 
     <string name="create_event_date_label">Event Date</string>
@@ -76,6 +76,7 @@
 
     <string name="create_event_description_label">Event Description</string>
     <string name="create_event_description_hint">Enter event description…</string>
+    <string name="create_event_create_btn">Create Event</string>
 
     <!--    Create Event: Map Fragment-->
     <string name="create_event_map_placeholder">PLACEHOLDER FOR GOOGLE MAPS</string>

@@ -56,7 +56,8 @@
                 android:layout_height="250dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent">
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/eventLocationLabel"
@@ -85,7 +86,7 @@
                     android:textColorHint="#757575" />
 
                 <Button
-                    android:id="@+id/saveChangesBtn"
+                    android:id="@+id/findBtn"
                     android:layout_width="fill_parent"
                     android:layout_height="50sp"
                     android:text="@string/create_event_address_btn" />
@@ -120,11 +121,14 @@
                 android:textFontWeight="500"
                 android:gravity="start" />
 
-            <Spinner
-                android:id="@+id/editGender"
-                android:contentDescription="@string/create_event_attendees_label"
-                android:layout_width="fill_parent"
-                android:layout_height="48dp" />
+            <EditText
+                android:id="@+id/attendeeLimit"
+                android:layout_width="match_parent"
+                android:hint="@string/create_event_attendees_label"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:gravity="top"
+                android:autofillHints="Number of attendees" />
 
             <TextView
                 android:id="@+id/eventDescriptionLabel"
@@ -149,7 +153,7 @@
                 android:layout_width="match_parent"
                 android:layout_marginTop="20sp"
                 android:layout_height="wrap_content"
-                android:text="@string/dashboard_save_changes_btn" />
+                android:text="@string/create_event_create_btn" />
 
         </LinearLayout>
     </ScrollView>

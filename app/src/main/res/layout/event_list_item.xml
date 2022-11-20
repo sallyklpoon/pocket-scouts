@@ -1,38 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:weightSum="1"
-    android:orientation="horizontal"
-    android:layout_margin="20dp"
-    android:padding="15dp"
-    android:background="@drawable/event_list_item_border">
+    android:layout_margin="10dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:checkable="true"
+    style="@style/Widget.App.CardView"
+    app:strokeWidth="1dp"
+    >
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/imageView"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_weight="0"
-        android:src="@mipmap/walbert" />
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="125dp"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:padding="10dp">
-        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="10dp"
+        >
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_weight="0"
+            android:src="@mipmap/walbert" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sample text"
-            android:id="@+id/eventTitleText"
-            android:textSize="24sp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Sample text"
-            android:id="@+id/eventDescriptionText"
-            android:textSize="20sp" />
+            android:layout_height="125dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sample text"
+                android:id="@+id/eventTitleText"
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:textSize="22sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sample text"
+                android:id="@+id/eventDescriptionText"
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:textSize="18sp" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

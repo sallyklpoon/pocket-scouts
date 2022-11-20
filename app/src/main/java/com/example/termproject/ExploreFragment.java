@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import androidx.core.app.ActivityCompat;
@@ -25,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +34,7 @@ import org.json.JSONObject;
 public class ExploreFragment extends Fragment {
     double longitude = 1;
     double latitude = 1;
+    MainActivity mainActivity;
 
     RequestQueue queue;
     private LocationManager locationManager;
@@ -59,24 +62,33 @@ public class ExploreFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Inflate mapFragment
-        Fragment mapFragment = new MapsFragment();
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.map_frame_layout, mapFragment).commit();
+        // get Main Activity for accessing variables
+        mainActivity = (MainActivity) getActivity();
+        assert mainActivity != null;
 
-        weatherText = view.findViewById(R.id.weatherText);
-        queue = Volley.newRequestQueue(requireActivity());
+        SearchView searchView = view.findViewById(R.id.search_location);
+        searchView.setOnQueryTextListener(new LocationQueryListener());
+
 
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(requireActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(requireActivity(),
-                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        String fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
+
+        // Inflate mapFragment
+        Fragment mapFragment = MapsFragment.newInstance(location.getLatitude(), location.getLongitude());
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.map_frame_layout, mapFragment).commit();
+
+        // Setup Weather
+        weatherText = view.findViewById(R.id.weatherText);
+        queue = Volley.newRequestQueue(requireActivity());
+
+        if (mainActivity.fineLocationPermission && mainActivity.coarseLocationPermission) {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, locationListener);
         } else {
             Log.d("Weather", "No permissions :(");
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            requestPermissions(new String[]{fineLocationPermission}, 1);
         }
     }
     @Override
@@ -124,6 +136,34 @@ public class ExploreFragment extends Fragment {
                 longitude = location.getLongitude();
             }
             updateWeatherData();
+        }
+    }
+
+    private class LocationQueryListener implements SearchView.OnQueryTextListener {
+
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+
+            // Mocking search here. In actuality, the SearchView
+            // would make use of Google Place API and Autocomplete for the search
+            // but broke student problems, so we will not be implementing the
+            // tool here, but are mocking the search to Tokyo.
+
+            LatLng tokyo = new LatLng(35.6812, 139.7671);
+            LatLng vancouver = new LatLng(49.2820, -123.1171);
+
+            LatLng queryLocation = (query.equals("Tokyo"))? tokyo : vancouver;
+
+            // Inflate mapFragment with new searched location
+            Fragment mapFragment = MapsFragment.newInstance(queryLocation.latitude, queryLocation.longitude);
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.map_frame_layout, mapFragment).commit();
+            return true;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            return false;
         }
     }
 }

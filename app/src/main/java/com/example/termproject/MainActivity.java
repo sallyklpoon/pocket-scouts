@@ -2,10 +2,13 @@ package com.example.termproject;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNav;
     private FirebaseAuth mAuth;
     boolean doubleBackToExitPressedOnce = false;
+    public boolean fineLocationPermission, coarseLocationPermission;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +34,14 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnItemSelectedListener(navigateToMenuItems);
+        fineLocationPermission = permissionGranted(Manifest.permission.ACCESS_FINE_LOCATION);
+        coarseLocationPermission = permissionGranted(Manifest.permission.ACCESS_COARSE_LOCATION);
         mAuth = FirebaseAuth.getInstance();
         renderUI();
+    }
+
+    private boolean permissionGranted(String permission) {
+        return ActivityCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
