@@ -167,6 +167,10 @@ public class ProfileFragment extends Fragment {
                         EditText nameText = view.findViewById(R.id.editNameInput);
                         nameText.setText(name);
 
+                        String lname = (String) userData.get("last_name");
+                        EditText lnameText = view.findViewById(R.id.editlNameInput);
+                        lnameText.setText(lname);
+
                         String dateString = (String) userData.get("birthday");
                         if (dateString != null) {
                             SimpleDateFormat simpleDateFormat = new

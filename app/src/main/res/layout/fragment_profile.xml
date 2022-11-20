@@ -158,6 +158,26 @@
                 android:textColorHint="@color/hint_colour" />
 
             <TextView
+                android:id="@+id/editlNameLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/dashboard_edit_lname"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+            <EditText
+                android:id="@+id/editlNameInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:ems="10"
+                android:hint="@string/dashboard_edit_lname_hint"
+                android:inputType="textPersonName"
+                android:minHeight="48dp"
+                android:textColorHint="@color/hint_colour" />
+
+            <TextView
                 android:id="@+id/editDOBLabel"
                 android:layout_marginTop="20sp"
                 android:layout_width="wrap_content"
