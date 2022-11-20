@@ -2,6 +2,7 @@ package com.example.termproject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +29,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +38,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -63,15 +68,15 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         firebaseAuth = FirebaseAuth.getInstance();
-        // Inflate the layout for this fragment
+
         View thisView = inflater.inflate(R.layout.fragment_profile, container, false);
-        // Set onClick Listener for Create Event
+
         Button hostEventBtn = thisView.findViewById(R.id.hostEventsBtn);
         hostEventBtn.setOnClickListener((View view) -> getParentFragmentManager().beginTransaction()
                 .replace(R.id.page_fragment_container, new CreateEventFragment()).commit());
 
-        // Set onClick Listener for My Events
         Button myEventsBtn = thisView.findViewById(R.id.myEventsBtn);
         myEventsBtn.setOnClickListener((View view) -> {
             getParentFragmentManager().beginTransaction()
@@ -83,7 +88,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // Listener for image upload
         Button imageUploadBtn = thisView.findViewById(R.id.dashboardIdVerificationBtn);
         imageUploadBtn.setOnClickListener(view -> selectAndUploadImage());
 
@@ -121,35 +125,23 @@ public class ProfileFragment extends Fragment {
     }
 
     private void uploadImage() {
-        if (filePath != null) {
-            StorageReference ref = storage.child(UUID.randomUUID().toString());
-            ref.putFile(filePath)
-                    .addOnSuccessListener(
-                            taskSnapshot -> Toast.makeText(requireActivity(), "Your ID has been" +
-                                            " uploaded",
-                                    Toast.LENGTH_SHORT).show())
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(requireActivity(),
-                                "Upload failed, please try again!" + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    });
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentFirebaseUser != null) {
+            String uid = currentFirebaseUser.getUid();
+            if (filePath != null) {
+                StorageReference ref = storage.child(uid);
+                ref.putFile(filePath)
+                        .addOnSuccessListener(
+                                taskSnapshot -> Toast.makeText(requireActivity(), "Your ID has been" +
+                                                " uploaded",
+                                        Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(requireActivity(),
+                                    "Upload failed, please try again!" + e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        });
+            }
         }
-    }
-
-    private void uploadToDB(String imageURL) {
-        // When verification is implemented, upload user_id (passed via argument) and image url
-        // Will be called after image is uploaded to storage to get url
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-        db.collection("test3717")
-                .add(user)
-                .addOnSuccessListener(documentReference -> Toast.makeText(requireActivity(),
-                        "Count updated", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(requireActivity(),
-                        e.toString(), Toast.LENGTH_SHORT).show());
-
     }
 
     private void getUserDetails(View view) {
@@ -200,6 +192,42 @@ public class ProfileFragment extends Fragment {
                         int spinnerPosition = adapter.getPosition(gender);
                         editGender.setSelection(spinnerPosition);
 
+                        TextView verificationText = view.findViewById
+                                (R.id.dashboardIdVerificationStatus);
+                        Button uploadBtn = view.findViewById
+                                (R.id.dashboardIdVerificationBtn);
+
+                        boolean isVerified = (boolean) userData.get("verified");
+                        if (isVerified) {
+                            verificationText.setText(R.string.isVerifiedText);
+                            uploadBtn.setEnabled(false);
+                            uploadBtn.setBackgroundColor(Color.LTGRAY);
+                        }
+
+                        ArrayList<String> eventIDs = new ArrayList<>();
+
+                        db.collection("event_confirmation").get().
+                                addOnCompleteListener(getEventConf -> {
+                                    if (getEventConf.isSuccessful()) {
+                                        int eventsAttended = 0;
+                                        for (QueryDocumentSnapshot document :
+                                                getEventConf.getResult()) {
+                                            String attendeeID = (String) document.get("user_id");
+                                            String event_id = (String) document.get("event_id");
+                                            boolean attended = (boolean) document.get("attended");
+                                            if (attendeeID != null && attendeeID.equals(uid)
+                                                    && attended) {
+                                                eventsAttended++;
+                                                eventIDs.add(event_id);
+                                            }
+                                        }
+
+                                        TextView numEventsTotal = view.findViewById
+                                                (R.id.numEventsTotal);
+
+                                        numEventsTotal.setText(String.valueOf(eventsAttended));
+                                    }
+                                });
 
                     } else {
                         Toast.makeText(requireActivity(),
@@ -220,6 +248,21 @@ public class ProfileFragment extends Fragment {
                             "again.",
                     Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    private void uploadToDB(String imageURL) {
+
+        Map<String, Object> user = new HashMap<>();
+        user.put("first", "Ada");
+        user.put("last", "Lovelace");
+        user.put("born", 1815);
+        db.collection("test3717")
+                .add(user)
+                .addOnSuccessListener(documentReference -> Toast.makeText(requireActivity(),
+                        "Count updated", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e -> Toast.makeText(requireActivity(),
+                        e.toString(), Toast.LENGTH_SHORT).show());
 
     }
 }
