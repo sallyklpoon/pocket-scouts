@@ -38,7 +38,6 @@ public class EventFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     Context context;
-    private Task<Void> allTask;
 
     private ArrayList<Event> eventList;
     private RecyclerView recyclerView;
@@ -82,10 +81,8 @@ public class EventFragment extends Fragment {
                         String eventId = Objects.requireNonNull(document.getData().get("event_id")).toString();
                         eventIds.add(eventId);
                     }
-                    Log.e("EVENT IDS", eventIds.toString());
                     findEventsById(eventIds, view);
                 } else {
-                    Log.e("ERROR RETRIEVING USER'S EVENTS", String.valueOf(task.getException()));
                     Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
@@ -109,7 +106,6 @@ public class EventFragment extends Fragment {
 
                     Event event = new Event(id, name, description, date, location, hostId, attendeeLimit);
                     userEvents.add(event);
-                    Log.e("HAHAHAH", userEvents.toString());
                 };
                 loadUserEventCardsRecycler(view);
             }
