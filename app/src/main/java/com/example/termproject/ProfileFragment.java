@@ -11,7 +11,12 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,7 +32,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.UploadTask;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -83,7 +93,7 @@ public class ProfileFragment extends Fragment {
             ((MainActivity) getActivity()).renderAuthentication();
         });
 
-        getUserDetails();
+        getUserDetails(thisView);
 
         return thisView;
     }
@@ -142,7 +152,7 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void getUserDetails() {
+    private void getUserDetails(View view) {
 
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentFirebaseUser != null) {
@@ -150,12 +160,42 @@ public class ProfileFragment extends Fragment {
             DocumentReference docRef = db.collection("user").document(uid);
             docRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
+                    DocumentSnapshot userData = task.getResult();
+                    if (userData.exists()) {
 
-                        Toast.makeText(requireActivity(),
-                                "User data: " + document.getData(),
-                                Toast.LENGTH_SHORT).show();
+                        String name = (String) userData.get("first_name");
+                        EditText nameText = view.findViewById(R.id.editNameInput);
+                        nameText.setText(name);
+
+                        String dateString = (String) userData.get("birthday");
+                        if (dateString != null) {
+                            SimpleDateFormat simpleDateFormat = new
+                                    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                            try {
+                                DatePicker datePicker = view.findViewById(R.id.dobDatePicker);
+                                Date birthday = simpleDateFormat.parse(dateString);
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.setTime(birthday);
+                                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                                int month = calendar.get(Calendar.MONTH);
+                                int year = calendar.get(Calendar.YEAR);
+                                datePicker.updateDate(year, month, day);
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        String gender = (String) userData.get("gender");
+                        String[] genders = getResources().getStringArray(R.array.gender_list);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                                R.layout.list_item, genders);
+                        Spinner editGender = view.findViewById(R.id.editGender);
+                        editGender.setAdapter(adapter);
+
+                        int spinnerPosition = adapter.getPosition(gender);
+                        editGender.setSelection(spinnerPosition);
+
 
                     } else {
                         Toast.makeText(requireActivity(),
