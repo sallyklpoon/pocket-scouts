@@ -53,7 +53,8 @@ public class ProfileFragment extends Fragment {
         // Set onClick Listener for Create Event
         Button hostEventBtn = thisView.findViewById(R.id.hostEventsBtn);
         hostEventBtn.setOnClickListener((View view) -> getParentFragmentManager().beginTransaction()
-                .replace(R.id.page_fragment_container, new CreateEventFragment()).commit());
+                .replace(R.id.page_fragment_container, new CreateEventFragment())
+                .addToBackStack(null).commit());
 
         // Set onClick Listener for My Events
         Button myEventsBtn = thisView.findViewById(R.id.myEventsBtn);

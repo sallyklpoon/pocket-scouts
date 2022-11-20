@@ -2,7 +2,6 @@ package com.example.termproject;
 
 import android.content.Context;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
@@ -15,9 +14,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.SearchView;
 
 import com.google.android.gms.maps.model.LatLng;
+import android.widget.DatePicker;
+import android.widget.Toast;
+
+import com.google.firebase.Timestamp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -27,17 +37,25 @@ public class CreateEventFragment extends Fragment {
     MainActivity mainActivity;
     private LocationManager locationManager;
     EditText editText;
+    View createEventFragment;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore db;
+    Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        context = getContext();
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_event, container, false);
+        createEventFragment = inflater.inflate(R.layout.fragment_create_event, container, false);
+        return createEventFragment;
     }
 
     @Override
@@ -65,6 +83,40 @@ public class CreateEventFragment extends Fragment {
                 findAddress(address);
             }
         });
+        Button saveChanges = createEventFragment.findViewById(R.id.eventsSaveChangesBtn);
+        saveChanges.setOnClickListener(e -> {
+            createEvent();
+        });
+
+    }
+
+    public void createEvent() {
+        String hostId = firebaseAuth.getCurrentUser().getUid();
+        EditText title = createEventFragment.findViewById(R.id.eventTitleInput);
+        EditText description = createEventFragment.findViewById(R.id.eventDescriptionTextArea);
+        EditText attendeeLimit = createEventFragment.findViewById(R.id.attendeeLimit);
+        DatePicker date = createEventFragment.findViewById(R.id.eventDatePicker);
+
+
+        Map<String, Object> eventData = new HashMap<>();
+        eventData.put("host_id", hostId);
+        eventData.put("name", String.valueOf(Objects.requireNonNull(title.getText())));
+        eventData.put("description", String.valueOf(Objects.requireNonNull(description.getText())));
+        eventData.put("attendee_limit", Integer.parseInt(Objects.requireNonNull(attendeeLimit.getText().toString())));
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(date.getYear(), date.getMonth(), date.getDayOfMonth());
+        eventData.put("date", new Timestamp(calendar.getTime()));
+
+        eventData.put("location", Arrays.asList(12.34, 43.21));
+        db.collection("event").add(eventData)
+                .addOnSuccessListener(success -> {
+                    Toast.makeText(context, "Event successfully created.", Toast.LENGTH_SHORT).show();
+                }).addOnFailureListener(failure -> {
+                    Toast.makeText(context, "Error in creating event. Please try again later.", Toast.LENGTH_SHORT).show();
+                });
+        getParentFragmentManager().popBackStackImmediate();
     }
 
     public void findAddress(String query) {

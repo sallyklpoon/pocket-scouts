@@ -75,6 +75,7 @@
 
     <string name="create_event_description_label">Event Description</string>
     <string name="create_event_description_hint">Enter event description…</string>
+    <string name="create_event_create_btn">Create Event</string>
 
     <!--    Create Event: Map Fragment-->
     <string name="create_event_map_placeholder">PLACEHOLDER FOR GOOGLE MAPS</string>
