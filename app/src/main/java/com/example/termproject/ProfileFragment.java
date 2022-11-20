@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -13,8 +14,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -77,6 +83,8 @@ public class ProfileFragment extends Fragment {
             ((MainActivity) getActivity()).renderAuthentication();
         });
 
+        getUserDetails();
+
         return thisView;
     }
 
@@ -107,14 +115,9 @@ public class ProfileFragment extends Fragment {
             StorageReference ref = storage.child(UUID.randomUUID().toString());
             ref.putFile(filePath)
                     .addOnSuccessListener(
-                            taskSnapshot -> {
-                                Activity activity = getActivity();
-                                if(activity != null) {
-                                    Toast.makeText(
-                                            requireActivity(), "Your ID has been uploaded",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            })
+                            taskSnapshot -> Toast.makeText(requireActivity(), "Your ID has been" +
+                                            " uploaded",
+                                    Toast.LENGTH_SHORT).show())
                     .addOnFailureListener(e -> {
                         Toast.makeText(requireActivity(),
                                 "Upload failed, please try again!" + e.getMessage(),
@@ -136,6 +139,43 @@ public class ProfileFragment extends Fragment {
                         "Count updated", Toast.LENGTH_SHORT).show())
                 .addOnFailureListener(e -> Toast.makeText(requireActivity(),
                         e.toString(), Toast.LENGTH_SHORT).show());
+
+    }
+
+    private void getUserDetails() {
+
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentFirebaseUser != null) {
+            String uid = currentFirebaseUser.getUid();
+            DocumentReference docRef = db.collection("user").document(uid);
+            docRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+
+                        Toast.makeText(requireActivity(),
+                                "User data: " + document.getData(),
+                                Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(requireActivity(),
+                                "There was a problem accessing user data. Please exit " +
+                                        "the app and try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(requireActivity(),
+                            "There was a problem accessing user data. Please exit the " +
+                                    "app and try again.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Toast.makeText(requireActivity(),
+                    "There was a problem accessing user data. Please exit the app and try " +
+                            "again.",
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
 }
