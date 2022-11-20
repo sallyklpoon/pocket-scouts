@@ -94,12 +94,16 @@ public class CreateEventFragment extends Fragment {
         String hostId = firebaseAuth.getCurrentUser().getUid();
         EditText title = createEventFragment.findViewById(R.id.eventTitleInput);
         EditText description = createEventFragment.findViewById(R.id.eventDescriptionTextArea);
+        EditText attendeeLimit = createEventFragment.findViewById(R.id.attendeeLimit);
         DatePicker date = createEventFragment.findViewById(R.id.eventDatePicker);
+
 
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("host_id", hostId);
         eventData.put("name", String.valueOf(Objects.requireNonNull(title.getText())));
         eventData.put("description", String.valueOf(Objects.requireNonNull(description.getText())));
+        eventData.put("attendee_limit", Integer.parseInt(Objects.requireNonNull(attendeeLimit.getText().toString())));
+
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(date.getYear(), date.getMonth(), date.getDayOfMonth());
@@ -112,6 +116,7 @@ public class CreateEventFragment extends Fragment {
                 }).addOnFailureListener(failure -> {
                     Toast.makeText(context, "Error in creating event. Please try again later.", Toast.LENGTH_SHORT).show();
                 });
+        getParentFragmentManager().popBackStackImmediate();
     }
 
     public void findAddress(String query) {
