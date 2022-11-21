@@ -16,7 +16,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -104,8 +103,7 @@ public class ExploreFragment extends Fragment {
         String fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
 
         // Inflate mapFragment
-        renderMap();
-        retrieveFutureEvents();
+        retrieveEventsAndMap();
 
         // Setup Weather
         weatherText = view.findViewById(R.id.weatherText);
@@ -131,8 +129,8 @@ public class ExploreFragment extends Fragment {
     private class AsyncTaskRunner extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
-//            Log.e("Weather Latitude", String.valueOf(latitude));
-//            Log.e("Weather Longitude", String.valueOf(longitude));
+            Log.w("Weather Latitude", String.valueOf(latitude));
+            Log.w("Weather Longitude", String.valueOf(longitude));
 
             String tempUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude +
                     "&longitude=" + longitude + "&current_weather=true";
@@ -183,8 +181,7 @@ public class ExploreFragment extends Fragment {
             searchLatitude = queryLocation.latitude;
             searchLongitude = queryLocation.longitude;
 
-            renderMap();
-            retrieveFutureEvents();
+            retrieveEventsAndMap();
             return true;
         }
 
@@ -196,12 +193,12 @@ public class ExploreFragment extends Fragment {
 
     private void renderMap() {
         // Inflate mapFragment with searched location
-        Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude);
+        Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude, this.events, false);
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.map_frame_layout, mapFragment).commit();
     }
 
-    private void retrieveFutureEvents() {
+    private void retrieveEventsAndMap() {
         events = new ArrayList<>();
         Date currentDate = new Date(System.currentTimeMillis());
         Query futureEventsInLocationQuery = db.collection("event")
@@ -226,6 +223,7 @@ public class ExploreFragment extends Fragment {
                     }
                 }
                 loadUserEventCardsRecycler();
+                renderMap();
             } else {
                 Log.e("EVENT ERRORED OUT.", task.getException().getMessage());
                 Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();

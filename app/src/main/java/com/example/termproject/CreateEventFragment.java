@@ -24,12 +24,11 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -149,7 +148,8 @@ public class CreateEventFragment extends Fragment {
     }
 
     private void renderMap() {
-        Fragment mapFragment = MapsFragment.newInstance(this.eventLatitude, this.eventLongitude);
+        Fragment mapFragment = MapsFragment.newInstance(this.eventLatitude, this.eventLongitude,
+                new ArrayList<Event>(), true);
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.map_frame_layout, mapFragment).commit();
     }
