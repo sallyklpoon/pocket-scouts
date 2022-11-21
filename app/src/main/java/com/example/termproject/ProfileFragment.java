@@ -5,46 +5,34 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.UploadTask;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.UUID;
 
 public class ProfileFragment extends Fragment {
 
@@ -99,6 +87,9 @@ public class ProfileFragment extends Fragment {
         });
 
         getUserDetails(thisView);
+
+        Button saveChangesBtn = thisView.findViewById(R.id.dashboardSaveChangesBtn);
+        saveChangesBtn.setOnClickListener(view -> updateUserData(thisView));
 
         return thisView;
     }
@@ -205,8 +196,6 @@ public class ProfileFragment extends Fragment {
                             uploadBtn.setBackgroundColor(Color.LTGRAY);
                         }
 
-                        ArrayList<String> eventIDs = new ArrayList<>();
-
                         db.collection("event_confirmation").get().
                                 addOnCompleteListener(getEventConf -> {
                                     if (getEventConf.isSuccessful()) {
@@ -219,7 +208,6 @@ public class ProfileFragment extends Fragment {
                                             if (attendeeID != null && attendeeID.equals(uid)
                                                     && attended) {
                                                 eventsAttended++;
-                                                eventIDs.add(event_id);
                                             }
                                         }
 
@@ -252,18 +240,51 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void uploadToDB(String imageURL) {
+    private void updateUserData(View view) {
+        FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentFirebaseUser != null) {
+            String uid = currentFirebaseUser.getUid();
 
-        Map<String, Object> user = new HashMap<>();
-        user.put("first", "Ada");
-        user.put("last", "Lovelace");
-        user.put("born", 1815);
-        db.collection("test3717")
-                .add(user)
-                .addOnSuccessListener(documentReference -> Toast.makeText(requireActivity(),
-                        "Count updated", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e -> Toast.makeText(requireActivity(),
-                        e.toString(), Toast.LENGTH_SHORT).show());
+            EditText nameText = view.findViewById(R.id.editNameInput);
+            EditText lnameText = view.findViewById(R.id.editlNameInput);
+            DatePicker datePicker = view.findViewById(R.id.dobDatePicker);
+            Spinner editGender = view.findViewById(R.id.editGender);
+
+            String fname = nameText.getText().toString();
+            String lname = lnameText.getText().toString();
+
+            String month = String.valueOf(datePicker.getMonth() + 1);
+            String day = String.valueOf(datePicker.getDayOfMonth());
+            String year = String.valueOf(datePicker.getYear());
+
+            if (day.length() == 1) {
+                day = "0" + day;
+            }
+
+            if (month.length() == 1) {
+                month = "0" + month;
+            }
+
+            String updatedBDay = day + "/" + month + "/" + year;
+
+            String gender = editGender.getSelectedItem().toString();
+
+            Map<String, String> data = new HashMap<>();
+            data.put("first_name", fname);
+            data.put("last_name", lname);
+            data.put("gender", gender);
+            data.put("birthday", updatedBDay);
+
+            db.collection("user").document(uid)
+                    .set(data, SetOptions.merge())
+                    .addOnSuccessListener(documentReference -> Toast.makeText(requireActivity(),
+                            "Your data was updated", Toast.LENGTH_SHORT).show())
+                    .addOnFailureListener(e -> Toast.makeText(requireActivity(),
+                            e.toString(), Toast.LENGTH_SHORT).show());
+
+
+        }
 
     }
+
 }
