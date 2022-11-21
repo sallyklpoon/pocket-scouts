@@ -14,19 +14,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.core.app.ActivityCompat;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
+
 import androidx.fragment.app.Fragment;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,13 +44,21 @@ import org.json.JSONObject;
 public class ExploreFragment extends Fragment {
     double longitude = 1;
     double latitude = 1;
+    double searchLatitude;
+    double searchLongitude;
     MainActivity mainActivity;
-
     RequestQueue queue;
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private FirebaseFirestore db;
+    Context context;
+    View currentView;
+
+    private RecyclerView eventsRecycler;
+    private ArrayList<Event> events = new ArrayList<>();
 
     TextView weatherText;
+
 
     public ExploreFragment() { super(R.layout.fragment_explore); }
 
@@ -54,8 +72,12 @@ public class ExploreFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        inflater.inflate(R.layout.fragment_explore, container, false);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_explore, container, false);
+        eventsRecycler = view.findViewById(R.id.exploreRecyclerView);
+        context = getContext();
+        db = FirebaseFirestore.getInstance();
+
+        return view;
     }
 
     @Override
@@ -65,6 +87,7 @@ public class ExploreFragment extends Fragment {
         // get Main Activity for accessing variables
         mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
+        currentView = view;
 
         SearchView searchView = view.findViewById(R.id.search_location);
         searchView.setOnQueryTextListener(new LocationQueryListener());
@@ -72,13 +95,17 @@ public class ExploreFragment extends Fragment {
 
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        searchLatitude = location.getLatitude();
+        searchLongitude = location.getLongitude();
+
+
         String fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
 
         // Inflate mapFragment
-        Fragment mapFragment = MapsFragment.newInstance(location.getLatitude(), location.getLongitude());
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.map_frame_layout, mapFragment).commit();
+        renderMap();
+        retrieveFutureEvents();
 
         // Setup Weather
         weatherText = view.findViewById(R.id.weatherText);
@@ -104,8 +131,8 @@ public class ExploreFragment extends Fragment {
     private class AsyncTaskRunner extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
-            Log.e("Weather Latitude", String.valueOf(latitude));
-            Log.e("Weather Longitude", String.valueOf(longitude));
+//            Log.e("Weather Latitude", String.valueOf(latitude));
+//            Log.e("Weather Longitude", String.valueOf(longitude));
 
             String tempUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude +
                     "&longitude=" + longitude + "&current_weather=true";
@@ -113,7 +140,7 @@ public class ExploreFragment extends Fragment {
                 try {
                     JSONObject jsonObjectSys = response.getJSONObject("current_weather");
                     double temp = jsonObjectSys.getDouble("temperature");
-                    String output = "The temperature is: " + temp + " degrees Celsius.";
+                    String output = "Current Temperature: " + temp + "°C";
                     weatherText.setText(output);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -153,11 +180,11 @@ public class ExploreFragment extends Fragment {
             LatLng vancouver = new LatLng(49.2820, -123.1171);
 
             LatLng queryLocation = (query.equals("Tokyo"))? tokyo : vancouver;
+            searchLatitude = queryLocation.latitude;
+            searchLongitude = queryLocation.longitude;
 
-            // Inflate mapFragment with new searched location
-            Fragment mapFragment = MapsFragment.newInstance(queryLocation.latitude, queryLocation.longitude);
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.map_frame_layout, mapFragment).commit();
+            renderMap();
+            retrieveFutureEvents();
             return true;
         }
 
@@ -165,5 +192,73 @@ public class ExploreFragment extends Fragment {
         public boolean onQueryTextChange(String newText) {
             return false;
         }
+    }
+
+    private void renderMap() {
+        // Inflate mapFragment with searched location
+        Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude);
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.map_frame_layout, mapFragment).commit();
+    }
+
+    private void retrieveFutureEvents() {
+        events = new ArrayList<>();
+        Date currentDate = new Date(System.currentTimeMillis());
+        Query futureEventsInLocationQuery = db.collection("event")
+                .whereGreaterThan("date", currentDate);
+
+        futureEventsInLocationQuery.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document: task.getResult()) {
+                    String id = document.getId();
+                    String name = (String) document.get("name");
+                    String description = (String) document.get("description");
+                    Date date = ((Timestamp) Objects.requireNonNull(document.get("date"))).toDate();
+                    Double latitude = (Double) document.get("latitude");
+                    Double longitude = (Double) document.get("longitude");
+                    String hostId = (String) document.get("host_id");
+                    Long attendeeLimit = (Long) document.get("attendee_limit");
+
+                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
+
+                    if (eventInLocationRange(event)) {
+                        events.add(event);
+                    }
+                }
+                loadUserEventCardsRecycler();
+            } else {
+                Log.e("EVENT ERRORED OUT.", task.getException().getMessage());
+                Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private boolean eventInLocationRange(Event event) {
+        Double eventLatitude = event.getLatitude();
+        Double eventLongitude = event.getLongitude();
+
+        // Search Region borders
+        Double eastLatitude = searchLatitude + 1;
+        double westLatitude = searchLatitude - 1;
+        double northLongitude = searchLongitude + 1;
+        double southLongitude = searchLongitude - 1;
+
+        return eventLatitude <= eastLatitude && eventLatitude >= westLatitude
+                && eventLongitude <= northLongitude && eventLongitude >= southLongitude;
+    }
+
+    private void loadUserEventCardsRecycler() {
+        if (events.size() > 0) {
+            Log.e("WOW EVENTS", this.events.toString());
+            recyclerAdapter adapter = new recyclerAdapter(this.events);
+            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
+            eventsRecycler.setLayoutManager(layoutManager);
+            eventsRecycler.setItemAnimator(new DefaultItemAnimator());
+            eventsRecycler.setAdapter(adapter);
+        } else {
+            TextView noEventsText = currentView.findViewById(R.id.no_events_explore);
+            noEventsText.setVisibility(View.VISIBLE);
+        }
+
     }
 }

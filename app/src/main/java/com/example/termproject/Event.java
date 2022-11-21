@@ -9,18 +9,20 @@ public class Event {
     private String name;
     private String description;
     private Date date;
-    private ArrayList<Double> location = new ArrayList<>();
+    private Double latitude;
+    private Double longitude;
     private final String hostId;
     private Long attendeeLimit;
 
 
     public Event(String id, String name, String description,
-                 Date date, ArrayList<Double> location, String hostId, Long limit) {
+                 Date date, Double latitude, Double longitude, String hostId, Long limit) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.date = date;
-        this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this .hostId = hostId;
         this.attendeeLimit = limit;
     }
@@ -41,8 +43,12 @@ public class Event {
         return date;
     }
 
-    public ArrayList<Double> getLocation() {
-        return location;
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
     }
 
     public String getHostId() {

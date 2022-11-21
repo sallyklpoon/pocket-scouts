@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +38,6 @@ public class EventFragment extends Fragment {
     private FirebaseFirestore db;
     Context context;
 
-    private ArrayList<Event> eventList;
     private RecyclerView recyclerView;
     private ArrayList<Event> userEvents = new ArrayList<>();
 
@@ -66,12 +64,12 @@ public class EventFragment extends Fragment {
     private void loadUserEvents(View view) {
         // To test the code, uncomment the mockUserId and substitute
         // userId variable with mockUserId in eventConfirmationQuery
-        // String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
+         String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
 
         String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ArrayList<String> eventIds = new ArrayList<>();
 
-        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", userId);
+        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", mockUserId);
 
         eventConfirmationQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -100,11 +98,12 @@ public class EventFragment extends Fragment {
                     String name = (String) document.get("name");
                     String description = (String) document.get("description");
                     Date date = ((Timestamp) Objects.requireNonNull(document.get("date"))).toDate();
-                    ArrayList<Double> location = (ArrayList<Double>) document.get("location");
+                    Double latitude = (Double) document.get("latitude");
+                    Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
 
-                    Event event = new Event(id, name, description, date, location, hostId, attendeeLimit);
+                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
                     userEvents.add(event);
                 };
                 loadUserEventCardsRecycler(view);

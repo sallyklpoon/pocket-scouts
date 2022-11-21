@@ -23,7 +23,7 @@
             android:iconifiedByDefault="false"
             android:queryHint="@string/location_search_hint" />
 
-        <ScrollView
+        <LinearLayout
             android:id="@+id/home_scroller"
             android:layout_width="match_parent"
             android:layout_height="368dp"
@@ -31,37 +31,37 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            android:padding="25dp"
+            android:padding="10dp"
             android:background="@drawable/round_top_bg"
+            android:orientation="vertical"
             >
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/weather_placeholder"
                     android:id="@+id/weatherText"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:gravity="center"
+                    />
+
+
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/homePageRecyclerView"
+                    android:id="@+id/exploreRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content" />
 
-            </LinearLayout>
-        </ScrollView>
+                <TextView
+                    android:id="@+id/no_events_explore"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/no_events"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:visibility="gone"
+                    />
 
-        <!-- Nav Bar fragment -->
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nav_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"/>
+        </LinearLayout>
 
     </FrameLayout>
 
