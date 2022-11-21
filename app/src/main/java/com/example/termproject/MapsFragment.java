@@ -13,24 +13,33 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MapsFragment extends Fragment {
 
-    private static final String FOCUS_LAT_PARAM = "param2";
-    private static final String FOCUS_LONG_PARAM = "param1";
+    private static final String FOCUS_LAT_PARAM = "latitude";
+    private static final String FOCUS_LONG_PARAM = "longitude";
+    private static final String EVENTS_PARAM = "events";
+    private static final String SHOW_LOCATION_PARAM = "show_location";
 
-    private double focus_lat;
-    private double focus_long;
+    private double focusLatitude;
+    private double focusLongitude;
+    private ArrayList<Event> events = new ArrayList<>();
+    private boolean showLocation;
 
     public MapsFragment() {}
 
-    public static MapsFragment newInstance(double init_lat, double init_long) {
+    public static MapsFragment newInstance(double init_lat, double init_long, ArrayList<Event> events, boolean showLocation) {
         MapsFragment fragment = new MapsFragment();
         Bundle args = new Bundle();
         args.putDouble(FOCUS_LAT_PARAM, init_lat);
         args.putDouble(FOCUS_LONG_PARAM, init_long);
+        args.putParcelableArrayList(EVENTS_PARAM, events);
+        args.putBoolean(SHOW_LOCATION_PARAM, showLocation);
         fragment.setArguments(args);
         return fragment;
     }
@@ -40,8 +49,10 @@ public class MapsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            focus_lat = getArguments().getDouble(FOCUS_LAT_PARAM);
-            focus_long = getArguments().getDouble(FOCUS_LONG_PARAM);
+            focusLatitude = getArguments().getDouble(FOCUS_LAT_PARAM);
+            focusLongitude = getArguments().getDouble(FOCUS_LONG_PARAM);
+            events = getArguments().getParcelableArrayList(EVENTS_PARAM);
+            showLocation = getArguments().getBoolean(SHOW_LOCATION_PARAM);
         }
     }
 
@@ -58,10 +69,15 @@ public class MapsFragment extends Fragment {
          */
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            LatLng location = new LatLng(focus_lat, focus_long);
-            googleMap.addMarker(new MarkerOptions().position(location).title("Marker in Shibuya"));
+            LatLng location = new LatLng(focusLatitude, focusLongitude);
             float zoomLevel = 12.0f;  // value goes up to 21
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
+            googleMap.addMarker(new MarkerOptions().position(location).visible(showLocation));
+
+            for (Event event: events) {
+                LatLng eventLocation = new LatLng(event.getLatitude(), event.getLongitude());
+                googleMap.addMarker(new MarkerOptions().position(eventLocation).title(event.getName()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            }
         }
     };
 
