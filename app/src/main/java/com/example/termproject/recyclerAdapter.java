@@ -1,10 +1,14 @@
 package com.example.termproject;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.*;
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,8 +29,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyViewHolder> {
     private final ArrayList<Event> eventList;
+    private final Fragment fragment;
 
-    public recyclerAdapter(ArrayList<Event> events) {
+    public recyclerAdapter(ArrayList<Event> events, Fragment fragment) {
+        this.fragment = fragment;
         this.eventList = events;
     }
 
@@ -35,11 +41,13 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         super.onAttachedToRecyclerView(recyclerView);
     }
 
+
     public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         Event event;
         TextView titleText;
         TextView descriptionText;
         CircleImageView imageView;
+        Fragment fragment;
 
         public MyViewHolder(final View view) {
             super(view);
@@ -51,42 +59,44 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
 
         @Override
         public void onClick(View v) {
-            MaterialAlertDialogBuilder confirmEvent = new MaterialAlertDialogBuilder(v.getContext());
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            confirmEvent.setTitle(titleText.getText().toString())
-                    .setMessage(descriptionText.getText().toString());
 
+            // check if the event has already been rsvp'd to before rendering modal
             db.collection("event_confirmation")
                     .whereEqualTo("event_id", event.getId())
                     .whereEqualTo("user_id", FirebaseAuth.getInstance().getUid())
                     .get()
                     .addOnCompleteListener(complete -> {
-                        if (complete.getResult().isEmpty()) {
-                            confirmEvent.setPositiveButton("Confirm RSVP", (dialogInterface, i) -> {
-                                Map<String, Object> confirmation = new HashMap<>();
-                                confirmation.put("event_id", event.getId());
-                                confirmation.put("user_id", FirebaseAuth.getInstance().getUid());
-                                confirmation.put("attended", false);
-                                db.collection("event_confirmation").add(confirmation)
-                                        .addOnSuccessListener(task -> {
-                                            Toast.makeText(v.getContext(), "Successfully RSVPed to the event!", Toast.LENGTH_SHORT).show();
-                                        }).addOnFailureListener(task -> {
-                                            Toast.makeText(v.getContext(), "Error in RSVPing to the event. Please try again later.", Toast.LENGTH_SHORT).show();
-                                        });
+                        EventItemDialogFragment dialog = new EventItemDialogFragment();
 
-                            });
-                        }
-                        confirmEvent.setNegativeButton("Back", (dialogInterface, i) -> {
-
-                        });
-                        confirmEvent.show();
+                        // if results is empty, we haven't rsvp'd yet so render the rsvp button
+                        Bundle bundle = buildEventBundle(event, !complete.getResult().isEmpty());
+                        dialog.setArguments(bundle);
+                        dialog.show(fragment.getChildFragmentManager(), "event_details");
                     });
+        }
+
+        private Bundle buildEventBundle(Event e, boolean rsvped) {
+            Bundle bundle = new Bundle();
+            bundle.putString("name", event.getName());
+            bundle.putString("date", event.getDate().toString());
+            bundle.putLong("limit", event.getAttendeeLimit());
+            bundle.putString("description", event.getDescription());
+            bundle.putBoolean("rsvped", rsvped);
+            bundle.putString("id", event.getId());
+            return bundle;
         }
 
         public void setEvent(Event e) {
             this.event = e;
         }
+
+        public void setFragment(Fragment f) {
+            this.fragment = f;
+        }
     }
+
+
 
 
     @NonNull
@@ -100,6 +110,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Event event = eventList.get(position);
         holder.setEvent(event);
+        holder.setFragment(fragment);
         holder.titleText.setText(event.getName());
         holder.descriptionText.setText(event.getDescription());
     }

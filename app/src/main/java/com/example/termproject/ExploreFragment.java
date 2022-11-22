@@ -52,12 +52,10 @@ public class ExploreFragment extends Fragment {
     private FirebaseFirestore db;
     Context context;
     View currentView;
+    TextView weatherText;
 
     private RecyclerView eventsRecycler;
     private ArrayList<Event> events = new ArrayList<>();
-
-    TextView weatherText;
-
 
     public ExploreFragment() { super(R.layout.fragment_explore); }
 
@@ -91,14 +89,12 @@ public class ExploreFragment extends Fragment {
         SearchView searchView = view.findViewById(R.id.search_location);
         searchView.setOnQueryTextListener(new LocationQueryListener());
 
-
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
         searchLatitude = location.getLatitude();
         searchLongitude = location.getLongitude();
-
 
         String fineLocationPermission = Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -248,7 +244,7 @@ public class ExploreFragment extends Fragment {
     private void loadUserEventCardsRecycler() {
         if (events.size() > 0) {
             Log.e("WOW EVENTS", this.events.toString());
-            recyclerAdapter adapter = new recyclerAdapter(this.events);
+            recyclerAdapter adapter = new recyclerAdapter(this.events, this);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
             eventsRecycler.setLayoutManager(layoutManager);
             eventsRecycler.setItemAnimator(new DefaultItemAnimator());
