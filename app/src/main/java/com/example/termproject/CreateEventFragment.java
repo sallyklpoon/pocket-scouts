@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +24,12 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,6 +43,8 @@ public class CreateEventFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     Context context;
+    private double eventLatitude = 1;
+    private double eventLongitude = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class CreateEventFragment extends Fragment {
         context = getContext();
         // Inflate the layout for this fragment
         createEventFragment = inflater.inflate(R.layout.fragment_create_event, container, false);
+
         return createEventFragment;
     }
 
@@ -67,12 +72,12 @@ public class CreateEventFragment extends Fragment {
 
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        eventLatitude = location.getLatitude();
+        eventLongitude = location.getLongitude();
+
         editText = view.findViewById(R.id.create_event_address_hint);
 
-        // Inflate Map fragment
-        Fragment mapFragment = MapsFragment.newInstance(location.getLatitude(), location.getLongitude());
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.map_frame_layout, mapFragment).commit();
+        renderMap();
 
         // Search Address listener
         Button searchAddressBtn = view.findViewById(R.id.findBtn);
@@ -109,7 +114,12 @@ public class CreateEventFragment extends Fragment {
         calendar.set(date.getYear(), date.getMonth(), date.getDayOfMonth());
         eventData.put("date", new Timestamp(calendar.getTime()));
 
-        eventData.put("location", Arrays.asList(12.34, 43.21));
+        // Simulate event lat long, should be changed if Google API can be used
+        eventLatitude = ThreadLocalRandom.current().nextDouble(-90, 90);
+        eventLongitude = ThreadLocalRandom.current().nextDouble(-180, 180);
+
+        eventData.put("latitude", eventLatitude);
+        eventData.put("longitude", eventLongitude);
         db.collection("event").add(eventData)
                 .addOnSuccessListener(success -> {
                     Toast.makeText(context, "Event successfully created.", Toast.LENGTH_SHORT).show();
@@ -131,11 +141,16 @@ public class CreateEventFragment extends Fragment {
 
         LatLng queryLocation = (query.equals("Tokyo"))? tokyo : vancouver;
 
-        // Inflate mapFragment with new searched location
-        Fragment mapFragment = MapsFragment.newInstance(queryLocation.latitude, queryLocation.longitude);
-        getChildFragmentManager().beginTransaction()
-                .replace(R.id.map_frame_layout, mapFragment).commit();
+        eventLatitude = queryLocation.latitude;
+        eventLongitude = queryLocation.longitude;
 
+        renderMap();
     }
 
+    private void renderMap() {
+        Fragment mapFragment = MapsFragment.newInstance(this.eventLatitude, this.eventLongitude,
+                new ArrayList<Event>(), true);
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.map_frame_layout, mapFragment).commit();
+    }
 }
