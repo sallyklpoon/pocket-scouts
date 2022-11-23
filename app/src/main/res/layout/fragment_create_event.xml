@@ -163,14 +163,15 @@
             android:orientation="horizontal">
 
             <Spinner
-                android:id="@+id/icon_spinner"
+                android:id="@+id/iconSpinner"
                 android:layout_marginTop="20sp"
                 android:layout_marginRight="20sp"
                 android:layout_width="235sp"
                 android:layout_height="wrap_content"/>
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imageView"
+            <ImageView
+                android:id="@+id/iconView"
+                android:padding="10sp"
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_marginEnd="10dp"

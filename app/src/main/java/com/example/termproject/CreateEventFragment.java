@@ -13,11 +13,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.model.LatLng;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
@@ -79,6 +82,15 @@ public class CreateEventFragment extends Fragment {
 
         renderMap();
 
+        String[] iconDescriptions = getResources().getStringArray(R.array.icon_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                R.layout.list_item, iconDescriptions);
+        Spinner iconSpinner = view.findViewById(R.id.iconSpinner);
+        iconSpinner.setAdapter(adapter);
+
+        ImageView icon = view.findViewById(R.id.iconView);
+        icon.setImageResource(R.drawable.events_bike);
+
         // Search Address listener
         Button searchAddressBtn = view.findViewById(R.id.findBtn);
         searchAddressBtn.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +100,7 @@ public class CreateEventFragment extends Fragment {
                 findAddress(address);
             }
         });
+
         Button saveChanges = createEventFragment.findViewById(R.id.eventsSaveChangesBtn);
         saveChanges.setOnClickListener(e -> {
             createEvent();
@@ -153,4 +166,6 @@ public class CreateEventFragment extends Fragment {
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.map_frame_layout, mapFragment).commit();
     }
+
+
 }
