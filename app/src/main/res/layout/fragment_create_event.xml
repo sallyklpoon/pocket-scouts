@@ -148,6 +148,36 @@
                 android:gravity="top"
                 android:importantForAutofill="no" />
 
+            <TextView
+                android:id="@+id/eventIconLabel"
+                android:layout_marginTop="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_event_icon_label"
+                android:textFontWeight="500"
+                android:gravity="start" />
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Spinner
+                android:id="@+id/icon_spinner"
+                android:layout_marginTop="20sp"
+                android:layout_marginRight="20sp"
+                android:layout_width="235sp"
+                android:layout_height="wrap_content"/>
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageView"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="0"/>
+
+        </LinearLayout>
+
             <Button
                 android:id="@+id/eventsSaveChangesBtn"
                 android:layout_width="match_parent"
