@@ -122,6 +122,7 @@ public class ExploreFragment extends Fragment {
         }
     }
 
+
     private class AsyncTaskRunner extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -188,6 +189,7 @@ public class ExploreFragment extends Fragment {
     }
 
     private void renderMap() {
+        if (!isAdded())  return;
         // Inflate mapFragment with searched location
         Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude, this.events, false);
         getChildFragmentManager().beginTransaction()
@@ -211,8 +213,10 @@ public class ExploreFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
+                    int iconType = (int) document.get("icon_type");
 
-                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
+                    Event event = new Event(id, name, description, iconType,
+                            date, latitude, longitude, hostId, attendeeLimit);
 
                     if (eventInLocationRange(event)) {
                         events.add(event);
