@@ -1,24 +1,25 @@
 package com.example.termproject;
 
 public class IconAssignment {
-    public static int iconID(int iconRefValue) {
+    public static int getIconID(int iconRefValue) {
         switch(iconRefValue) {
-            case 1:
+            case 0:
                 return R.drawable.events_bike;
-            case 2:
+            case 1:
                 return R.drawable.events_cafe;
-            case 3:
+            case 2:
                 return R.drawable.events_food;
-            case 4:
+            case 3:
                 return R.drawable.events_nature;
-            case 5:
+            case 4:
                 return R.drawable.events_party;
-            case 6:
+            case 5:
                 return R.drawable.events_run;
-            case 7:
+            case 6:
                 return R.drawable.events_sparkle;
             default:
                 return -1;
         }
     }
+
 }
