@@ -190,6 +190,7 @@ public class ProfileFragment extends Fragment {
                                 (R.id.dashboardIdVerificationBtn);
 
                         boolean isVerified = (boolean) userData.get("verified");
+
                         if (isVerified) {
                             verificationText.setText(R.string.isVerifiedText);
                             uploadBtn.setEnabled(false);
@@ -203,7 +204,6 @@ public class ProfileFragment extends Fragment {
                                         for (QueryDocumentSnapshot document :
                                                 getEventConf.getResult()) {
                                             String attendeeID = (String) document.get("user_id");
-                                            String event_id = (String) document.get("event_id");
                                             boolean attended = (boolean) document.get("attended");
                                             if (attendeeID != null && attendeeID.equals(uid)
                                                     && attended) {

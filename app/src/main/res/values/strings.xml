@@ -76,6 +76,18 @@
 
     <string name="create_event_description_label">Event Description</string>
     <string name="create_event_description_hint">Enter event description…</string>
+
+    <string name="create_event_icon_label">Choose An Icon</string>
+    <string-array name="icon_list">
+        <item>Biking</item>
+        <item>Coffee</item>
+        <item>Food</item>
+        <item>Nature</item>
+        <item>Party</item>
+        <item>Running</item>
+        <item>Sparkles</item>
+    </string-array>
+
     <string name="create_event_create_btn">Create Event</string>
 
     <!--    Create Event: Map Fragment-->
