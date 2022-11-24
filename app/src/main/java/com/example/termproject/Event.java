@@ -25,7 +25,7 @@ public class Event implements Parcelable {
         this.date = date;
         this.latitude = latitude;
         this.longitude = longitude;
-        this .hostId = hostId;
+        this.hostId = hostId;
         this.attendeeLimit = limit;
     }
 
