@@ -26,7 +26,7 @@ import java.util.Objects;
 public class EventItemDialogFragment extends DialogFragment {
     boolean rsvped;
     String eventId;
-    int iconType;
+    Long iconType;
 
     @NonNull
     @Override
@@ -77,7 +77,7 @@ public class EventItemDialogFragment extends DialogFragment {
         description.setText(bundle.getString("description"));
         rsvped = bundle.getBoolean("rsvped");
         eventId = bundle.getString("id");
-        iconType = bundle.getInt("icon_type");
+        iconType = bundle.getLong("icon_type");
         imageView.setImageResource(IconAssignment.getIconMipMapID(iconType));
     }
 }

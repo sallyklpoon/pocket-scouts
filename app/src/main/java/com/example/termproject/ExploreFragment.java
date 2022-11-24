@@ -3,6 +3,7 @@ package com.example.termproject;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -91,7 +92,10 @@ public class ExploreFragment extends Fragment {
 
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
-        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        Location location = locationManager.getLastKnownLocation(provider);
 
         searchLatitude = location.getLatitude();
         searchLongitude = location.getLongitude();
@@ -213,7 +217,7 @@ public class ExploreFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
-                    int iconType = (int) document.get("icon_type");
+                    Long iconType = (Long) document.get("icon_type");
 
                     Event event = new Event(id, name, description, iconType,
                             date, latitude, longitude, hostId, attendeeLimit);

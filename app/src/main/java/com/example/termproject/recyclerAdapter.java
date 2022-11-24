@@ -84,7 +84,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             bundle.putString("description", event.getDescription());
             bundle.putBoolean("rsvped", rsvped);
             bundle.putString("id", event.getId());
-            bundle.putInt("icon_type", event.getIconType());
+            bundle.putLong("icon_type", event.getIconType());
             return bundle;
         }
 

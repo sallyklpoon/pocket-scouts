@@ -102,7 +102,7 @@ public class EventFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
-                    int iconType = (int) document.get("icon_type");
+                    Long iconType = (Long) document.get("icon_type");
 
                     Event event = new Event(id, name, description, iconType, date, latitude,
                             longitude, hostId, attendeeLimit);
