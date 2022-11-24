@@ -33,7 +33,6 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class EventFragment extends Fragment {
-
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     Context context;
@@ -79,7 +78,9 @@ public class EventFragment extends Fragment {
                         String eventId = Objects.requireNonNull(document.getData().get("event_id")).toString();
                         eventIds.add(eventId);
                     }
-                    findEventsById(eventIds, view);
+                    if (!eventIds.isEmpty()) {
+                        findEventsById(eventIds, view);
+                    }
                 } else {
                     Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
@@ -88,7 +89,6 @@ public class EventFragment extends Fragment {
     }
 
     private void findEventsById(ArrayList<String> eventIds, View view) {
-
         Query allEventsQuery = db.collection("event").whereIn(FieldPath.documentId(), eventIds);
 
         allEventsQuery.get().addOnCompleteListener(task -> {
@@ -112,7 +112,7 @@ public class EventFragment extends Fragment {
     }
 
     private void loadUserEventCardsRecycler(View view) {
-        recyclerAdapter adapter = new recyclerAdapter(this.userEvents);
+        recyclerAdapter adapter = new recyclerAdapter(this.userEvents, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
