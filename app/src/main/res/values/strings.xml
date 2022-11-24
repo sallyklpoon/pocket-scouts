@@ -36,8 +36,7 @@
 
     <string name="dashboard_events_attended_month">0</string>
     <string name="dashboard_events_attended_total">0</string>
-    <string name="dashboard_events_attended_month_label">Events Last Month</string>
-    <string name="dashboard_events_attended_total_label">Events Attended Total</string>
+    <string name="dashboard_events_attended_total_label">Events You Attended</string>
 
     <string name="dashboard_my_events_btn">My Events</string>
     <string name="dashboard_host_events_btn">Host an Event</string>
@@ -47,6 +46,8 @@
     <string name="dashboard_verify_id_true">Your ID has already been verified.</string>
     <string name="dashboard_edit_name">Edit Name</string>
     <string name="dashboard_edit_name_hint">Enter new name…</string>
+    <string name="dashboard_edit_lname">Edit Last Name</string>
+    <string name="dashboard_edit_lname_hint">Enter new last name…</string>
     <string name="dashboard_edit_birthday">Edit Birthday</string>
     <string name="dashboard_edit_gender">Edit Gender</string>
 
@@ -85,7 +86,7 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
 
     <string name="web_client_id">74407383316-s9qqbmlc623hfsgva8ts63u9gd9rblu1.apps.googleusercontent.com</string>
+    <string name="isVerifiedText">You have already verified your id.</string>
 
-    <!--    View Events  -->
     <string name="no_events">There are no events in the area. Check again later or host one!</string>
 </resources>
