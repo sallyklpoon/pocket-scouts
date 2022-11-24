@@ -68,10 +68,6 @@ public class EventFragment extends Fragment {
 
     private void loadUserEvents(View view) {
         progressIndicator.setVisibility(View.VISIBLE);
-        // To test the code, uncomment the mockUserId and substitute
-        // userId variable with mockUserId in eventConfirmationQuery
-        String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
-
         ArrayList<String> eventIds = new ArrayList<>();
 
         Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", currentUser);
@@ -117,8 +113,6 @@ public class EventFragment extends Fragment {
     }
 
     private void findHostEvents(View view) {
-        String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
-
         Query userHostedEventsQuery = db.collection("event").whereEqualTo("host_id", currentUser);
 
         userHostedEventsQuery.get().addOnCompleteListener(task -> {
