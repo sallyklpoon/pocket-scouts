@@ -2,24 +2,22 @@ package com.example.termproject;
 
 public class IconAssignment {
     public static int getIconID(int iconRefValue) {
-        switch(iconRefValue) {
-            case 0:
-                return R.drawable.events_bike;
-            case 1:
-                return R.drawable.events_cafe;
-            case 2:
-                return R.drawable.events_food;
-            case 3:
-                return R.drawable.events_nature;
-            case 4:
-                return R.drawable.events_party;
-            case 5:
-                return R.drawable.events_run;
-            case 6:
-                return R.drawable.events_sparkle;
-            default:
-                return -1;
+        if (iconRefValue == 0) {
+            return R.drawable.events_bike;
+        } else if (iconRefValue == 1) {
+            return R.drawable.events_cafe;
+        } else if (iconRefValue == 2) {
+            return R.drawable.events_food;
+        } else if (iconRefValue == 3) {
+            return R.drawable.events_nature;
+        } else if (iconRefValue == 4) {
+            return R.drawable.events_party;
+        } else if (iconRefValue == 5) {
+            return R.drawable.events_run;
+        } else if (iconRefValue == 6) {
+            return R.drawable.events_sparkle;
         }
+        return -1;
     }
 
     public static int getIconMipMapID(Long iconRefValue) {
