@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -41,6 +42,7 @@ public class EventFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ArrayList<Event> userEvents = new ArrayList<>();
+    CircularProgressIndicator progressIndicator;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,7 @@ public class EventFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event, container, false);
         recyclerView = view.findViewById(R.id.eventPageRecyclerView);
+        progressIndicator = view.findViewById(R.id.eventsProgressIndicator);
         context = getContext();
         firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getUid();
@@ -64,6 +67,7 @@ public class EventFragment extends Fragment {
     }
 
     private void loadUserEvents(View view) {
+        progressIndicator.setVisibility(View.VISIBLE);
         // To test the code, uncomment the mockUserId and substitute
         // userId variable with mockUserId in eventConfirmationQuery
         String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
@@ -145,6 +149,8 @@ public class EventFragment extends Fragment {
     }
 
     private void loadUserEventCardsRecycler(View view) {
+        progressIndicator.setVisibility(View.GONE);
+
         this.userEvents.sort(Comparator.comparing(Event::getDate));
         Collections.reverse(this.userEvents);
         recyclerAdapter adapter = new recyclerAdapter(this.userEvents, this);

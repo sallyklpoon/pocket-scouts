@@ -23,6 +23,17 @@
             tools:layout_editor_absoluteX="52dp"
             tools:layout_editor_absoluteY="55dp" />
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/eventsProgressIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            />
+
+
         <TextView
             android:id="@+id/no_events_eventsFragment"
             android:layout_width="match_parent"

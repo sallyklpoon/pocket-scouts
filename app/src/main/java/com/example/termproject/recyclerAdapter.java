@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -48,6 +50,9 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             descriptionText = view.findViewById(R.id.eventDescriptionText);
             imageView = view.findViewById(R.id.eventImageView);
             eventCard = view.findViewById(R.id.eventCardLayout);
+
+            Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.event_fade_in);
+            eventCard.setAnimation(animation);
             db = FirebaseFirestore.getInstance();
             view.setOnClickListener(this);
         }
