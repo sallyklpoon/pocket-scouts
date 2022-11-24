@@ -107,7 +107,6 @@ public class CreateEventFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parentView) {
                 iconSelected = 0;
             }
-
         });
 
         // Search Address listener
