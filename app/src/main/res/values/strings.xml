@@ -87,4 +87,7 @@
 
     <string name="web_client_id">74407383316-s9qqbmlc623hfsgva8ts63u9gd9rblu1.apps.googleusercontent.com</string>
     <string name="isVerifiedText">You have already verified your id.</string>
+
+    <string name="no_events">There are no events in the area. Check again later or host one!</string>
+
 </resources>
