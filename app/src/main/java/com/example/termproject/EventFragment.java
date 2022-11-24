@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
@@ -22,6 +23,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -67,7 +70,7 @@ public class EventFragment extends Fragment {
 
         ArrayList<String> eventIds = new ArrayList<>();
 
-        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", mockUserId);
+        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", currentUser);
 
         eventConfirmationQuery.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -112,7 +115,7 @@ public class EventFragment extends Fragment {
     private void findHostEvents(View view) {
         String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
 
-        Query userHostedEventsQuery = db.collection("event").whereEqualTo("host_id", mockUserId);
+        Query userHostedEventsQuery = db.collection("event").whereEqualTo("host_id", currentUser);
 
         userHostedEventsQuery.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -142,10 +145,16 @@ public class EventFragment extends Fragment {
     }
 
     private void loadUserEventCardsRecycler(View view) {
+        this.userEvents.sort(Comparator.comparing(Event::getDate));
+        Collections.reverse(this.userEvents);
         recyclerAdapter adapter = new recyclerAdapter(this.userEvents, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(view.getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(adapter);
+        if (this.userEvents.isEmpty()) {
+            TextView noEventsText = view.findViewById(R.id.no_events_eventsFragment);
+            noEventsText.setVisibility(View.VISIBLE);
+        }
     }
 }

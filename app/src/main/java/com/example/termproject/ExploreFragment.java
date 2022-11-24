@@ -188,6 +188,7 @@ public class ExploreFragment extends Fragment {
     }
 
     private void renderMap() {
+        if (!isAdded()) return;
         // Inflate mapFragment with searched location
         Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude, this.events, false);
         getChildFragmentManager().beginTransaction()
@@ -243,7 +244,6 @@ public class ExploreFragment extends Fragment {
 
     private void loadUserEventCardsRecycler() {
         if (events.size() > 0) {
-            Log.e("WOW EVENTS", this.events.toString());
             recyclerAdapter adapter = new recyclerAdapter(this.events, this);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
             eventsRecycler.setLayoutManager(layoutManager);

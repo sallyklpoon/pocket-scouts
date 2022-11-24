@@ -1,8 +1,6 @@
 package com.example.termproject;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -26,6 +23,8 @@ import java.util.Objects;
 public class EventItemDialogFragment extends DialogFragment {
     boolean rsvped;
     String eventId;
+    String currentUser;
+    String eventHost;
 
     @NonNull
     @Override
@@ -34,10 +33,11 @@ public class EventItemDialogFragment extends DialogFragment {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.event_list_item_dialog, null);
         builder.setView(view);
+        currentUser = FirebaseAuth.getInstance().getUid();
         setEventDialogFields(view);
 
-        // we don't want to include the rsvp button if we've already rsvp'd
-        if (!rsvped) {
+        // we don't want to include the rsvp button if we've already rsvp'd or if user is host
+        if (!rsvped && !eventHost.equals(currentUser)) {
             builder.setPositiveButton("RSVP", (dialog, id) -> {
                 Map<String, Object> confirmation = new HashMap<>();
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,20 +61,48 @@ public class EventItemDialogFragment extends DialogFragment {
         return builder.create();
     }
 
+    private void setHostName(String hostId, View view) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("user")
+                .document(hostId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String hostFirst = (String) task.getResult().get("first_name");
+                        String hostLast = (String) task.getResult().get("last_name");
+                        String hostName = String.format("%s %s", hostFirst, hostLast);
+                        TextView eventHostName = view.findViewById(R.id.eventDialogHost);
+                        eventHostName.setText(hostName);
+                    }
+                });
+    }
+
     private void setEventDialogFields(View view) {
         ImageView imageView = view.findViewById(R.id.eventDialogImageView);
         TextView title = view.findViewById(R.id.eventDialogTitle);
         TextView date = view.findViewById(R.id.eventDialogDate);
         TextView limit = view.findViewById(R.id.eventDialogLimit);
         TextView description = view.findViewById(R.id.eventDialogDescription);
+        TextView eventStatusText = view.findViewById(R.id.eventStatus);
 
         Bundle bundle = getArguments();
         assert bundle != null;
         title.setText(bundle.getString("name"));
-        date.setText(String.format("Date: %s", bundle.getString("date")));
-        limit.setText(String.format("Attendee limit: %d", bundle.getLong("limit")));
+        date.setText(String.format("%s", bundle.getString("date")));
+        limit.setText(String.format("%d people", bundle.getLong("limit")));
         description.setText(bundle.getString("description"));
+        setHostName(bundle.getString("hostId"), view);
+
         rsvped = bundle.getBoolean("rsvped");
         eventId = bundle.getString("id");
+        eventHost = bundle.getString("hostId");
+        if (rsvped) {
+            eventStatusText.setText(R.string.user_rsvp_event);
+            eventStatusText.setVisibility(View.VISIBLE);
+        }
+        if (eventHost.equals(currentUser)) {
+            eventStatusText.setText(R.string.user_host_of_event);
+            eventStatusText.setVisibility(View.VISIBLE);
+        }
     }
 }

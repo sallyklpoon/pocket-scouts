@@ -88,4 +88,12 @@
 
     <!--    View Events  -->
     <string name="no_events">There are no events in the area. Check again later or host one!</string>
+
+    <!--    Event Dialogue  -->
+    <string name="user_host_of_event">You\'re hosting!</string>
+    <string name="user_rsvp_event">You\'re attending!</string>
+    <string name="date">Date</string>
+    <string name="event_dialogue_limit">Limit</string>
+    <string name="event_dialogue_description">Details</string>
+    <string name="event_dialogue_host">Host</string>
 </resources>
