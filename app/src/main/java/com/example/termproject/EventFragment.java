@@ -3,7 +3,6 @@ package com.example.termproject;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -14,18 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -36,6 +34,7 @@ public class EventFragment extends Fragment {
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     Context context;
+    private String currentUser;
 
     private RecyclerView recyclerView;
     private ArrayList<Event> userEvents = new ArrayList<>();
@@ -53,6 +52,7 @@ public class EventFragment extends Fragment {
         recyclerView = view.findViewById(R.id.eventPageRecyclerView);
         context = getContext();
         firebaseAuth = FirebaseAuth.getInstance();
+        currentUser = firebaseAuth.getUid();
         db = FirebaseFirestore.getInstance();
 
         loadUserEvents(view);
@@ -63,16 +63,13 @@ public class EventFragment extends Fragment {
     private void loadUserEvents(View view) {
         // To test the code, uncomment the mockUserId and substitute
         // userId variable with mockUserId in eventConfirmationQuery
-         String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
+        String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
 
-        String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ArrayList<String> eventIds = new ArrayList<>();
 
         Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", mockUserId);
 
-        eventConfirmationQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        eventConfirmationQuery.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     for (QueryDocumentSnapshot document: task.getResult()) {
                         String eventId = Objects.requireNonNull(document.getData().get("event_id")).toString();
@@ -81,11 +78,11 @@ public class EventFragment extends Fragment {
                     if (!eventIds.isEmpty()) {
                         findEventsById(eventIds, view);
                     }
+                    findHostEvents(view);
                 } else {
                     Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
-            }
-        });
+            });
     }
 
     private void findEventsById(ArrayList<String> eventIds, View view) {
@@ -106,9 +103,42 @@ public class EventFragment extends Fragment {
                     Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
                     userEvents.add(event);
                 };
-                loadUserEventCardsRecycler(view);
+            } else {
+                Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void findHostEvents(View view) {
+        String mockUserId = "vkW6lNuyo4VX7QWo9XLiiEhI1bf2";
+
+        Query userHostedEventsQuery = db.collection("event").whereEqualTo("host_id", mockUserId);
+
+        userHostedEventsQuery.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                List<DocumentSnapshot> documents = task.getResult().getDocuments();
+                for (QueryDocumentSnapshot document: task.getResult()) {
+                    Event event = createEventByDocument(document);
+                    userEvents.add(event);
+                }
+                loadUserEventCardsRecycler(view);
+            } else {
+                Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private Event createEventByDocument(QueryDocumentSnapshot document) {
+        String id = document.getId();
+        String name = (String) document.get("name");
+        String description = (String) document.get("description");
+        Date date = ((Timestamp) Objects.requireNonNull(document.get("date"))).toDate();
+        Double latitude = (Double) document.get("latitude");
+        Double longitude = (Double) document.get("longitude");
+        String hostId = (String) document.get("host_id");
+        Long attendeeLimit = (Long) document.get("attendee_limit");
+
+        return new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
     }
 
     private void loadUserEventCardsRecycler(View view) {

@@ -28,6 +28,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <TextView
+            android:id="@+id/no_events_explore"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_events"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:visibility="gone"
+            />
+
 
     </LinearLayout>
     <!-- Nav Bar fragment -->
