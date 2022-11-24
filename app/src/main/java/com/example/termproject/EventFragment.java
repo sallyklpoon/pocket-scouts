@@ -26,6 +26,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -68,7 +69,7 @@ public class EventFragment extends Fragment {
         String userId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ArrayList<String> eventIds = new ArrayList<>();
 
-        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", mockUserId);
+        Query eventConfirmationQuery = db.collection("event_confirmation").whereEqualTo("user_id", userId);
 
         eventConfirmationQuery.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -102,8 +103,12 @@ public class EventFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
-
-                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
+                    Double hostRating = (Double) document.get("hostRating");
+                    List<String> ratings = (List<String>)  document.get("ratings");
+                    if (ratings == null) {
+                        ratings = new ArrayList<String>();
+                    }
+                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
                     userEvents.add(event);
                 };
                 loadUserEventCardsRecycler(view);

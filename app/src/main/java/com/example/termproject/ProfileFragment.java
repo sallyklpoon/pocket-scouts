@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
+
 public class ProfileFragment extends Fragment {
 
     private Uri filePath;
@@ -55,6 +57,14 @@ public class ProfileFragment extends Fragment {
         hostEventBtn.setOnClickListener((View view) -> getParentFragmentManager().beginTransaction()
                 .replace(R.id.page_fragment_container, new CreateEventFragment())
                 .addToBackStack(null).commit());
+        MaterialRatingBar ratingBar = thisView.findViewById(R.id.rating_bar);
+
+        db.collection("user").document(FirebaseAuth.getInstance().getUid()).get().addOnSuccessListener(documentSnapshot -> {
+            Object rating = documentSnapshot.get("rating");
+            if (rating instanceof Number) {
+                ratingBar.setRating(((Number) rating).floatValue());
+            }
+        });
 
         // Set onClick Listener for My Events
         Button myEventsBtn = thisView.findViewById(R.id.myEventsBtn);

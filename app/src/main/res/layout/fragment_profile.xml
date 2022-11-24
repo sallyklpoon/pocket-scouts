@@ -27,12 +27,14 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <RatingBar
-                    android:id="@+id/hostRating"
-                    android:contentDescription="@string/dashboard_host_rating_label"
+                <me.zhanghai.android.materialratingbar.MaterialRatingBar
+                    android:id="@+id/rating_bar"
                     android:layout_width="wrap_content"
+                    android:contentDescription="@string/dashboard_host_rating_label"
                     android:layout_height="wrap_content"
-                    android:numStars="5"/>
+                    style="@style/Widget.MaterialRatingBar.RatingBar"
+                    android:numStars="5"
+                    android:stepSize="0.1" />
 
                 <TextView
                     android:id="@+id/hostRatingLabel"

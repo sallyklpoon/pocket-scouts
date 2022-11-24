@@ -2,30 +2,20 @@ package com.example.termproject;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.*;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyViewHolder> {
     private final ArrayList<Event> eventList;
@@ -48,12 +38,14 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         TextView descriptionText;
         CircleImageView imageView;
         Fragment fragment;
+        MaterialRatingBar ratingBar;
 
         public MyViewHolder(final View view) {
             super(view);
             titleText = view.findViewById(R.id.eventTitleText);
             descriptionText = view.findViewById(R.id.eventDescriptionText);
             imageView = view.findViewById(R.id.eventImageView);
+            ratingBar = view.findViewById(R.id.rating_bar);
             view.setOnClickListener(this);
         }
 
@@ -68,7 +60,6 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
                     .get()
                     .addOnCompleteListener(complete -> {
                         EventItemDialogFragment dialog = new EventItemDialogFragment();
-
                         // if results is empty, we haven't rsvp'd yet so render the rsvp button
                         Bundle bundle = buildEventBundle(event, !complete.getResult().isEmpty());
                         dialog.setArguments(bundle);
@@ -84,6 +75,9 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             bundle.putString("description", event.getDescription());
             bundle.putBoolean("rsvped", rsvped);
             bundle.putString("id", event.getId());
+            bundle.putString("hostId", event.getHostId());
+            bundle.putDouble("hostRating", event.getHostRating());
+            bundle.putBoolean("alreadyRated", event.getRatings().contains(FirebaseAuth.getInstance().getUid()));
             return bundle;
         }
 
@@ -112,6 +106,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         holder.setEvent(event);
         holder.setFragment(fragment);
         holder.titleText.setText(event.getName());
+        holder.ratingBar.setRating(event.getHostRating().floatValue());
         holder.descriptionText.setText(event.getDescription());
     }
 

@@ -53,6 +53,7 @@ public class AuthSignupFragment extends Fragment {
                     userData.put("gender", gender);
                     userData.put("birthday", birthday);
                     userData.put("verified", false);
+                    userData.put("rating", 0);
 
                     // add user information to a database document, where the document id is the user's unique id
                     assert user != null;

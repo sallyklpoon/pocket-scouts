@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.fragment.app.Fragment;
@@ -188,6 +189,7 @@ public class ExploreFragment extends Fragment {
     }
 
     private void renderMap() {
+        if (!isAdded()) return;
         // Inflate mapFragment with searched location
         Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude, this.events, false);
         getChildFragmentManager().beginTransaction()
@@ -211,8 +213,13 @@ public class ExploreFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
+                    Double hostRating = (Double) document.get("hostRating");
+                    List<String> ratings = (List<String>)  document.get("ratings");
+                    if (ratings == null) {
+                        ratings = new ArrayList<String>();
+                    }
 
-                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
+                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
 
                     if (eventInLocationRange(event)) {
                         events.add(event);

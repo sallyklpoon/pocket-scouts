@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -102,7 +103,6 @@ public class CreateEventFragment extends Fragment {
         EditText attendeeLimit = createEventFragment.findViewById(R.id.attendeeLimit);
         DatePicker date = createEventFragment.findViewById(R.id.eventDatePicker);
 
-
         Map<String, Object> eventData = new HashMap<>();
         eventData.put("host_id", hostId);
         eventData.put("name", String.valueOf(Objects.requireNonNull(title.getText())));
@@ -120,12 +120,23 @@ public class CreateEventFragment extends Fragment {
 
         eventData.put("latitude", eventLatitude);
         eventData.put("longitude", eventLongitude);
-        db.collection("event").add(eventData)
-                .addOnSuccessListener(success -> {
-                    Toast.makeText(context, "Event successfully created.", Toast.LENGTH_SHORT).show();
-                }).addOnFailureListener(failure -> {
-                    Toast.makeText(context, "Error in creating event. Please try again later.", Toast.LENGTH_SHORT).show();
-                });
+
+        db.collection("user").document(hostId).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                Map<String, Object> documentData = document.getData();
+                assert documentData != null;
+                eventData.put("hostRating", documentData.get("rating"));
+                db.collection("event").add(eventData)
+                        .addOnSuccessListener(success -> {
+                            Toast.makeText(context, "Event successfully created.", Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(failure -> {
+                            Toast.makeText(context, "Error in creating event. Please try again later.", Toast.LENGTH_SHORT).show();
+                        });
+            } else {
+                Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
         getParentFragmentManager().popBackStackImmediate();
     }
 
