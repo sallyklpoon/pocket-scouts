@@ -33,6 +33,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -54,6 +55,7 @@ public class ExploreFragment extends Fragment {
     Context context;
     View currentView;
     TextView weatherText;
+    CircularProgressIndicator progressIndicator;
 
     private RecyclerView eventsRecycler;
     private ArrayList<Event> events = new ArrayList<>();
@@ -72,6 +74,8 @@ public class ExploreFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
         eventsRecycler = view.findViewById(R.id.exploreRecyclerView);
+        progressIndicator = view.findViewById(R.id.exploreProgressIndicator);
+        progressIndicator.setVisibility(View.VISIBLE);
         context = getContext();
         db = FirebaseFirestore.getInstance();
 
@@ -201,6 +205,8 @@ public class ExploreFragment extends Fragment {
     }
 
     private void retrieveEventsAndMap() {
+        progressIndicator.setVisibility(View.VISIBLE);
+
         events = new ArrayList<>();
         Date currentDate = new Date(System.currentTimeMillis());
         Query futureEventsInLocationQuery = db.collection("event")
@@ -250,8 +256,8 @@ public class ExploreFragment extends Fragment {
     }
 
     private void loadUserEventCardsRecycler() {
+        progressIndicator.setVisibility(View.GONE);
         if (events.size() > 0) {
-            Log.e("WOW EVENTS", this.events.toString());
             recyclerAdapter adapter = new recyclerAdapter(this.events, this);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
             eventsRecycler.setLayoutManager(layoutManager);

@@ -1,29 +1,22 @@
 package com.example.termproject;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.*;
 
-import android.app.Activity;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -48,18 +41,24 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         TextView descriptionText;
         CircleImageView imageView;
         Fragment fragment;
+        MaterialCardView eventCard;
+        FirebaseFirestore db;
 
         public MyViewHolder(final View view) {
             super(view);
             titleText = view.findViewById(R.id.eventTitleText);
             descriptionText = view.findViewById(R.id.eventDescriptionText);
             imageView = view.findViewById(R.id.eventImageView);
+            eventCard = view.findViewById(R.id.eventCardLayout);
+
+            Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.event_fade_in);
+            eventCard.setAnimation(animation);
+            db = FirebaseFirestore.getInstance();
             view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             // check if the event has already been rsvp'd to before rendering modal
             db.collection("event_confirmation")
@@ -84,6 +83,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             bundle.putString("description", event.getDescription());
             bundle.putBoolean("rsvped", rsvped);
             bundle.putString("id", event.getId());
+            bundle.putString("hostId", event.getHostId());
             bundle.putLong("icon_type", event.getIconType());
             return bundle;
         }
@@ -98,8 +98,6 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     }
 
 
-
-
     @NonNull
     @Override
     public recyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -109,9 +107,18 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        String currentUser = FirebaseAuth.getInstance().getUid();
         Event event = eventList.get(position);
+
         holder.setEvent(event);
         holder.setFragment(fragment);
+        if (event.getHostId().equals(currentUser)) {
+            int color = ContextCompat.getColor(holder.eventCard.getContext(), R.color.purple_light);
+            holder.eventCard.setBackgroundColor(color);
+        }
+        if (event.getDate().before(new Date(System.currentTimeMillis()))) {
+            holder.eventCard.setChecked(true);
+        }
         holder.titleText.setText(event.getName());
         holder.descriptionText.setText(event.getDescription());
         holder.imageView.setImageResource(IconAssignment.getIconMipMapID(event.getIconType()));
