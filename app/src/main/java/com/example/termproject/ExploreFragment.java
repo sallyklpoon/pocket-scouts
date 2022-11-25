@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +56,7 @@ public class ExploreFragment extends Fragment {
     Context context;
     View currentView;
     TextView weatherText;
+    ImageView weatherIcon;
     CircularProgressIndicator progressIndicator;
 
     private RecyclerView eventsRecycler;
@@ -111,6 +113,7 @@ public class ExploreFragment extends Fragment {
 
         // Setup Weather
         weatherText = view.findViewById(R.id.weatherText);
+        weatherIcon = view.findViewById(R.id.weatherImage);
         queue = Volley.newRequestQueue(requireActivity());
 
         if (mainActivity.fineLocationPermission && mainActivity.coarseLocationPermission) {
@@ -143,8 +146,14 @@ public class ExploreFragment extends Fragment {
                 try {
                     JSONObject jsonObjectSys = response.getJSONObject("current_weather");
                     double temp = jsonObjectSys.getDouble("temperature");
-                    String output = "Current Temperature: " + temp + "°C";
+                    String output = temp + "°C";
                     weatherText.setText(output);
+                    if (temp < 13) {
+                        weatherIcon.setImageResource(R.drawable.weather_cold);
+                    } else {
+                        weatherIcon.setImageResource(R.drawable.weather_hot);
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
