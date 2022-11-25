@@ -109,4 +109,5 @@
     <string name="event_dialogue_limit">Limit</string>
     <string name="event_dialogue_description">Details</string>
     <string name="event_dialogue_host">Host</string>
+    <string name="weather_icon">Weather Icon</string>
 </resources>

@@ -140,8 +140,10 @@ public class EventFragment extends Fragment {
         Double longitude = (Double) document.get("longitude");
         String hostId = (String) document.get("host_id");
         Long attendeeLimit = (Long) document.get("attendee_limit");
+        Long iconType = (Long) document.get("icon_type");
 
-        return new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit);
+        return new Event(id, name, description, iconType, date, latitude,
+                longitude, hostId, attendeeLimit);
     }
 
     private void loadUserEventCardsRecycler(View view) {
