@@ -14,4 +14,5 @@
     <color name="red_google">#e74c3c</color>
     <color name="red_light">#f8c9c4</color>
     <color name="hint_colour">#757575</color>
+    <color name="light_gray">#D3D3D3</color>
 </resources>

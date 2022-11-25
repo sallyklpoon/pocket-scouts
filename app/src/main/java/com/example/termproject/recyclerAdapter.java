@@ -84,6 +84,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             bundle.putBoolean("rsvped", rsvped);
             bundle.putString("id", event.getId());
             bundle.putString("hostId", event.getHostId());
+            bundle.putLong("icon_type", event.getIconType());
             return bundle;
         }
 
@@ -120,6 +121,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         }
         holder.titleText.setText(event.getName());
         holder.descriptionText.setText(event.getDescription());
+        holder.imageView.setImageResource(IconAssignment.getIconMipMapID(event.getIconType()));
     }
 
     @Override

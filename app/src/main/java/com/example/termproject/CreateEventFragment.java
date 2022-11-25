@@ -13,11 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.model.LatLng;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
@@ -45,6 +49,7 @@ public class CreateEventFragment extends Fragment {
     Context context;
     private double eventLatitude = 1;
     private double eventLongitude = 1;
+    private int iconSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +84,31 @@ public class CreateEventFragment extends Fragment {
 
         renderMap();
 
+        // Set Spinner elements and override methods
+        String[] iconDescriptions = getResources().getStringArray(R.array.icon_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                R.layout.list_item, iconDescriptions);
+        Spinner iconSpinner = view.findViewById(R.id.iconSpinner);
+        iconSpinner.setAdapter(adapter);
+
+        ImageView icon = view.findViewById(R.id.iconView);
+        icon.setImageResource(R.drawable.events_bike);
+
+        iconSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
+                                       int position, long id) {
+                iconSelected = position;
+                int currentSelection = IconAssignment.getIconID(position);
+                icon.setImageResource(currentSelection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                iconSelected = 0;
+            }
+        });
+
         // Search Address listener
         Button searchAddressBtn = view.findViewById(R.id.findBtn);
         searchAddressBtn.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +118,7 @@ public class CreateEventFragment extends Fragment {
                 findAddress(address);
             }
         });
+
         Button saveChanges = createEventFragment.findViewById(R.id.eventsSaveChangesBtn);
         saveChanges.setOnClickListener(e -> {
             createEvent();
@@ -108,7 +139,7 @@ public class CreateEventFragment extends Fragment {
         eventData.put("name", String.valueOf(Objects.requireNonNull(title.getText())));
         eventData.put("description", String.valueOf(Objects.requireNonNull(description.getText())));
         eventData.put("attendee_limit", Integer.parseInt(Objects.requireNonNull(attendeeLimit.getText().toString())));
-
+        eventData.put("icon_type", iconSelected);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(date.getYear(), date.getMonth(), date.getDayOfMonth());
@@ -153,4 +184,6 @@ public class CreateEventFragment extends Fragment {
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.map_frame_layout, mapFragment).commit();
     }
+
+
 }

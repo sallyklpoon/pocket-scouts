@@ -15,9 +15,10 @@ public class Event implements Parcelable {
     private Double longitude;
     private String hostId;
     private Long attendeeLimit;
+    private Long iconType;
 
 
-    public Event(String id, String name, String description,
+    public Event(String id, String name, String description, Long iconType,
                  Date date, Double latitude, Double longitude, String hostId, Long limit) {
         this.id = id;
         this.name = name;
@@ -27,6 +28,7 @@ public class Event implements Parcelable {
         this.longitude = longitude;
         this.hostId = hostId;
         this.attendeeLimit = limit;
+        this.iconType = iconType;
     }
 
     public String getId() {
@@ -57,6 +59,8 @@ public class Event implements Parcelable {
         return hostId;
     }
 
+    public Long getIconType() {return iconType;}
+
     public Long getAttendeeLimit() {
         return attendeeLimit;
     }
@@ -84,6 +88,7 @@ public class Event implements Parcelable {
         dest.writeValue(this.longitude);
         dest.writeString(this.hostId);
         dest.writeValue(this.attendeeLimit);
+        dest.writeValue(this.iconType);
     }
 
     public void readFromParcel(Parcel source) {
@@ -96,6 +101,7 @@ public class Event implements Parcelable {
         this.longitude = (Double) source.readValue(Double.class.getClassLoader());
         this.hostId = source.readString();
         this.attendeeLimit = (Long) source.readValue(Long.class.getClassLoader());
+        this.iconType = (Long) source.readValue(Long.class.getClassLoader());
     }
 
     protected Event(Parcel in) {
@@ -108,6 +114,7 @@ public class Event implements Parcelable {
         this.longitude = (Double) in.readValue(Double.class.getClassLoader());
         this.hostId = in.readString();
         this.attendeeLimit = (Long) in.readValue(Long.class.getClassLoader());
+        this.iconType = (Long) in.readValue(Long.class.getClassLoader());
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {

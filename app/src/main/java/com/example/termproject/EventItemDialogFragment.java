@@ -25,6 +25,7 @@ public class EventItemDialogFragment extends DialogFragment {
     String eventId;
     String currentUser;
     String eventHost;
+    Long iconType;
 
     @NonNull
     @Override
@@ -104,5 +105,7 @@ public class EventItemDialogFragment extends DialogFragment {
             eventStatusText.setText(R.string.user_host_of_event);
             eventStatusText.setVisibility(View.VISIBLE);
         }
+        iconType = bundle.getLong("icon_type");
+        imageView.setImageResource(IconAssignment.getIconMipMapID(iconType));
     }
 }
