@@ -14,10 +14,11 @@
         android:layout_height="wrap_content"
         android:layout_row="0"
         android:layout_column="0"
-        android:layout_rowWeight="1"
+        android:layout_rowWeight="3"
         android:layout_gravity="center"
         android:textStyle="bold"
         android:textSize="40sp"
+        android:textColor="@color/orange_500"
         android:paddingHorizontal="40dp"
         android:text="@string/sign_up" />
 
@@ -153,7 +154,7 @@
             android:layout_marginTop="30dp"
             android:paddingHorizontal="80dp"
             android:textColor="#fff"
-            android:backgroundTint="@color/red_google"
+            android:backgroundTint="@color/orange_500"
             android:layout_gravity="center"
             />
 

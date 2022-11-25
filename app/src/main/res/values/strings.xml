@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">TermProject</string>
-    <string name="sign_up">Sign Up</string>
-    <string name="journey">Start your Journey today!</string>
+    <string name="app_name">PocketScout</string>
+    <string name="sign_up">Sign Up with Email</string>
+    <string name="journey">Find your flock!</string>
     <string name="continue_google">Continue with Google</string>
-    <string name="email_signup">I\'ll use email or phone</string>
+    <string name="email_signup">Log in with Email</string>
     <string name="already_account">Need an account?</string>
     <string name="login">Login</string>
     <string name="welcome_back">Welcome Back, Log In!</string>
