@@ -76,7 +76,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="15dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingBottom="0dp"
         >
 
         <TableLayout
@@ -171,6 +173,17 @@
             android:layout_height="wrap_content"
             android:text="description"
             android:textSize="16sp"
+            />
+
+
+        <ImageButton
+            android:id="@+id/shareBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/share_icon"
+            android:contentDescription="@string/share"
+            android:background="@android:color/transparent"
+            android:layout_marginTop="20dp"
             />
     </LinearLayout>
 </LinearLayout>

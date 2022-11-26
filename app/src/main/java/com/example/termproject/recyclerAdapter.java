@@ -69,13 +69,13 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
                         EventItemDialogFragment dialog = new EventItemDialogFragment();
 
                         // if results is empty, we haven't rsvp'd yet so render the rsvp button
-                        Bundle bundle = buildEventBundle(event, !complete.getResult().isEmpty());
+                        Bundle bundle = buildEventBundle(!complete.getResult().isEmpty());
                         dialog.setArguments(bundle);
                         dialog.show(fragment.getChildFragmentManager(), "event_details");
                     });
         }
 
-        private Bundle buildEventBundle(Event e, boolean rsvped) {
+        private Bundle buildEventBundle(boolean rsvped) {
             Bundle bundle = new Bundle();
             bundle.putString("name", event.getName());
             bundle.putString("date", event.getDate().toString());

@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -27,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,7 +33,6 @@ import java.util.Objects;
  * create an instance of this fragment.
  */
 public class EventFragment extends Fragment {
-    private FirebaseAuth firebaseAuth;
     private FirebaseFirestore db;
     Context context;
     private String currentUser;
@@ -57,7 +54,7 @@ public class EventFragment extends Fragment {
         recyclerView = view.findViewById(R.id.eventPageRecyclerView);
         progressIndicator = view.findViewById(R.id.eventsProgressIndicator);
         context = getContext();
-        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         currentUser = firebaseAuth.getUid();
         db = FirebaseFirestore.getInstance();
 
@@ -79,7 +76,7 @@ public class EventFragment extends Fragment {
                         eventIds.add(eventId);
                     }
                     if (!eventIds.isEmpty()) {
-                        findEventsById(eventIds, view);
+                        findEventsById(eventIds);
                     }
                     findHostEvents(view);
                 } else {
@@ -88,7 +85,7 @@ public class EventFragment extends Fragment {
             });
     }
 
-    private void findEventsById(ArrayList<String> eventIds, View view) {
+    private void findEventsById(ArrayList<String> eventIds) {
         Query allEventsQuery = db.collection("event").whereIn(FieldPath.documentId(), eventIds);
 
         allEventsQuery.get().addOnCompleteListener(task -> {
@@ -107,7 +104,7 @@ public class EventFragment extends Fragment {
                     Event event = new Event(id, name, description, iconType, date, latitude,
                             longitude, hostId, attendeeLimit);
                     userEvents.add(event);
-                };
+                }
             } else {
                 Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -119,7 +116,6 @@ public class EventFragment extends Fragment {
 
         userHostedEventsQuery.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                List<DocumentSnapshot> documents = task.getResult().getDocuments();
                 for (QueryDocumentSnapshot document: task.getResult()) {
                     Event event = createEventByDocument(document);
                     userEvents.add(event);

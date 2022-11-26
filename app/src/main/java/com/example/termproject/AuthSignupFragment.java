@@ -69,14 +69,14 @@ public class AuthSignupFragment extends Fragment {
 
     private void attachToXML() {
         try {
-            TextInputLayout firstNameInput = (TextInputLayout) authSignupFragment.findViewById(R.id.first_name);
-            TextInputLayout lastNameInput = (TextInputLayout) authSignupFragment.findViewById(R.id.last_name);
-            MaterialButton loginButton = (MaterialButton) authSignupFragment.findViewById(R.id.button_signup);
-            TextInputLayout emailInput = (TextInputLayout) authSignupFragment.findViewById(R.id.email);
-            TextInputLayout passwordInput = (TextInputLayout) authSignupFragment.findViewById(R.id.password);
-            TextInputLayout birthdayInput = (TextInputLayout) authSignupFragment.findViewById(R.id.birthday);
-            TextInputLayout genderInput = (TextInputLayout) authSignupFragment.findViewById(R.id.gender);
-            TextInputEditText birthday_value = (TextInputEditText) authSignupFragment.findViewById(R.id.birthday_value);
+            TextInputLayout firstNameInput = authSignupFragment.findViewById(R.id.first_name);
+            TextInputLayout lastNameInput = authSignupFragment.findViewById(R.id.last_name);
+            MaterialButton loginButton = authSignupFragment.findViewById(R.id.button_signup);
+            TextInputLayout emailInput = authSignupFragment.findViewById(R.id.email);
+            TextInputLayout passwordInput = authSignupFragment.findViewById(R.id.password);
+            TextInputLayout birthdayInput = authSignupFragment.findViewById(R.id.birthday);
+            TextInputLayout genderInput = authSignupFragment.findViewById(R.id.gender);
+            TextInputEditText birthday_value = authSignupFragment.findViewById(R.id.birthday_value);
             birthday_value.setInputType(InputType.TYPE_NULL);
             birthday_value.setKeyListener(null);
             MaterialDatePicker.Builder<Long> materialDateBuilder = MaterialDatePicker.Builder.datePicker();
@@ -94,7 +94,7 @@ public class AuthSignupFragment extends Fragment {
             });
             String[] genders = getResources().getStringArray(R.array.gender_list);
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item, genders);
-            AutoCompleteTextView textView = (AutoCompleteTextView) authSignupFragment.findViewById(R.id.gender_dropdown);
+            AutoCompleteTextView textView = authSignupFragment.findViewById(R.id.gender_dropdown);
             textView.setAdapter(adapter);
             firebaseAuth = FirebaseAuth.getInstance();
 
