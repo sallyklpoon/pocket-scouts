@@ -149,7 +149,7 @@ public class EventItemDialogFragment extends DialogFragment {
             if (task.isSuccessful()) {
                 signedUp = task.getResult().getCount();
                 Log.e("COUNT", String.valueOf(signedUp));
-                limitView.setText(String.format("%d/%d people", signedUp, limit));
+                limitView.setText(String.format(Locale.ENGLISH, "%d/%d people", signedUp, limit));
 
                 if (signedUp > limit) {
                     eventStatusText.setText(R.string.event_limit_reached);

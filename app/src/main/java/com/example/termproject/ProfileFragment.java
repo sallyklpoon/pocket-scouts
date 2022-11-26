@@ -33,6 +33,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 public class ProfileFragment extends Fragment {
 
@@ -83,7 +84,7 @@ public class ProfileFragment extends Fragment {
         Button signOutButton = thisView.findViewById(R.id.dashboardSignOutBtn);
         signOutButton.setOnClickListener((View view) -> {
             firebaseAuth.signOut();
-            ((MainActivity) getActivity()).renderAuthentication();
+            ((MainActivity) requireActivity()).renderAuthentication();
         });
 
         getUserDetails(thisView);
@@ -127,11 +128,9 @@ public class ProfileFragment extends Fragment {
                                 taskSnapshot -> Toast.makeText(requireActivity(), "Your ID has been" +
                                                 " uploaded",
                                         Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(requireActivity(),
-                                    "Upload failed, please try again!" + e.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        });
+                        .addOnFailureListener(e -> Toast.makeText(requireActivity(),
+                                "Upload failed, please try again!" + e.getMessage(),
+                                Toast.LENGTH_SHORT).show());
             }
         }
     }
@@ -163,6 +162,7 @@ public class ProfileFragment extends Fragment {
                                 DatePicker datePicker = view.findViewById(R.id.dobDatePicker);
                                 Date birthday = simpleDateFormat.parse(dateString);
                                 Calendar calendar = Calendar.getInstance();
+                                assert birthday != null;
                                 calendar.setTime(birthday);
                                 int day = calendar.get(Calendar.DAY_OF_MONTH);
                                 int month = calendar.get(Calendar.MONTH);

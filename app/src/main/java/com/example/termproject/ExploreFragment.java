@@ -244,7 +244,7 @@ public class ExploreFragment extends Fragment {
                 loadUserEventCardsRecycler();
                 renderMap();
             } else {
-                Log.e("EVENT ERRORED OUT.", task.getException().getMessage());
+                Log.e("EVENT ERROR OUT.", Objects.requireNonNull(task.getException()).getMessage());
                 Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

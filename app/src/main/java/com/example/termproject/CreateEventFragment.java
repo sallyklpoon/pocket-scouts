@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,7 +40,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class CreateEventFragment extends Fragment {
     MainActivity mainActivity;
-    private LocationManager locationManager;
     EditText editText;
     View createEventFragment;
     private FirebaseAuth firebaseAuth;
@@ -75,7 +73,7 @@ public class CreateEventFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         eventLatitude = location.getLatitude();
         eventLongitude = location.getLongitude();
@@ -111,23 +109,18 @@ public class CreateEventFragment extends Fragment {
 
         // Search Address listener
         Button searchAddressBtn = view.findViewById(R.id.findBtn);
-        searchAddressBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String address = editText.getText().toString();
-                findAddress(address);
-            }
+        searchAddressBtn.setOnClickListener(view1 -> {
+            String address = editText.getText().toString();
+            findAddress(address);
         });
 
         Button saveChanges = createEventFragment.findViewById(R.id.eventsSaveChangesBtn);
-        saveChanges.setOnClickListener(e -> {
-            createEvent();
-        });
+        saveChanges.setOnClickListener(e -> createEvent());
 
     }
 
     public void createEvent() {
-        String hostId = firebaseAuth.getCurrentUser().getUid();
+        String hostId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         EditText title = createEventFragment.findViewById(R.id.eventTitleInput);
         EditText description = createEventFragment.findViewById(R.id.eventDescriptionTextArea);
         EditText attendeeLimit = createEventFragment.findViewById(R.id.attendeeLimit);
@@ -152,11 +145,8 @@ public class CreateEventFragment extends Fragment {
         eventData.put("latitude", eventLatitude);
         eventData.put("longitude", eventLongitude);
         db.collection("event").add(eventData)
-                .addOnSuccessListener(success -> {
-                    Toast.makeText(context, "Event successfully created.", Toast.LENGTH_SHORT).show();
-                }).addOnFailureListener(failure -> {
-                    Toast.makeText(context, "Error in creating event. Please try again later.", Toast.LENGTH_SHORT).show();
-                });
+                .addOnSuccessListener(success -> Toast.makeText(context, "Event successfully created.", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(failure -> Toast.makeText(context, "Error in creating event. Please try again later.", Toast.LENGTH_SHORT).show());
         getParentFragmentManager().popBackStackImmediate();
     }
 
@@ -180,7 +170,7 @@ public class CreateEventFragment extends Fragment {
 
     private void renderMap() {
         Fragment mapFragment = MapsFragment.newInstance(this.eventLatitude, this.eventLongitude,
-                new ArrayList<Event>(), true);
+                new ArrayList<>(), true);
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.map_frame_layout, mapFragment).commit();
     }

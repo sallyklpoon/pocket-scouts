@@ -65,14 +65,6 @@ public class Event implements Parcelable {
         return attendeeLimit;
     }
 
-    public void setTitle(String title) {
-        this.name = title;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public int describeContents() {
         return 0;
