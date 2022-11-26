@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PocketScout</string>
+    <string name="app_name">PocketScouts</string>
     <string name="sign_up">Sign Up with Email</string>
     <string name="journey">Find your flock!</string>
     <string name="continue_google">Continue with Google</string>
@@ -105,9 +105,12 @@
     <!--    Event Dialogue  -->
     <string name="user_host_of_event">You\'re hosting!</string>
     <string name="user_rsvp_event">You\'re attending!</string>
+    <string name="old_event">Event ended</string>
+    <string name="event_limit_reached">Event limit reached!</string>
     <string name="date">Date</string>
     <string name="event_dialogue_limit">Limit</string>
     <string name="event_dialogue_description">Details</string>
     <string name="event_dialogue_host">Host</string>
     <string name="weather_icon">Weather Icon</string>
+    <string name="share">Share Event</string>
 </resources>

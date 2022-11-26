@@ -67,11 +67,11 @@ public class AuthFragment extends Fragment {
         googleSignInClient = GoogleSignIn.getClient(requireActivity(), googleSignInOptions);
         firebaseAuth = FirebaseAuth.getInstance();
         View view = inflater.inflate(R.layout.fragment_auth, container, false);
-        MaterialButton googleButton = (MaterialButton) view.findViewById(R.id.button_continue_google);
+        MaterialButton googleButton = view.findViewById(R.id.button_continue_google);
         googleButton.setOnClickListener(v -> continueWithGoogle());
-        MaterialButton loginButton = (MaterialButton) view.findViewById(R.id.login_button);
+        MaterialButton loginButton = view.findViewById(R.id.login_button);
         loginButton.setOnClickListener(v -> ((MainActivity) requireActivity()).navigateToFragment(new AuthLoginFragment(), R.id.nav_events, true));
-        TextView emailButton = (TextView) view.findViewById(R.id.signup_button);
+        TextView emailButton = view.findViewById(R.id.signup_button);
         emailButton.setOnClickListener(v -> ((MainActivity) requireActivity()).navigateToFragment(new AuthSignupFragment(), R.id.nav_events, true));
         return view;
     }

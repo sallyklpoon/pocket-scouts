@@ -1,10 +1,12 @@
 package com.example.termproject;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,9 +16,15 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.AggregateQuery;
+import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -26,16 +34,59 @@ public class EventItemDialogFragment extends DialogFragment {
     String currentUser;
     String eventHost;
     Long iconType;
+    ImageButton shareBtn;
+
+    String title;
+    String date;
+    Long limit;
+    String description;
+    long signedUp;
+
+    ImageView imageView;
+    TextView titleView;
+    TextView dateView ;
+    TextView limitView;
+    TextView detailsView;
+    TextView eventStatusText;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.AlertDialogTheme);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.event_list_item_dialog, null);
-        builder.setView(view);
+
+        imageView = view.findViewById(R.id.eventDialogImageView);
+        titleView = view.findViewById(R.id.eventDialogTitle);
+        dateView = view.findViewById(R.id.eventDialogDate);
+        limitView = view.findViewById(R.id.eventDialogLimit);
+        detailsView = view.findViewById(R.id.eventDialogDescription);
+        eventStatusText = view.findViewById(R.id.eventStatus);
+
+        // Assign bundle variables
+        Bundle bundle = getArguments();
+        assert bundle != null;
+
+        title = bundle.getString("name");
+        date = bundle.getString("date");
+        limit = bundle.getLong("limit");
+        description = bundle.getString("description");
+        rsvped = bundle.getBoolean("rsvped");
+        eventId = bundle.getString("id");
+        eventHost = bundle.getString("hostId");
+        iconType = bundle.getLong("icon_type");
+
         currentUser = FirebaseAuth.getInstance().getUid();
-        setEventDialogFields(view);
+        shareBtn = view.findViewById(R.id.shareBtn);
+
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme);
+        builder.setView(view);
+
+        try {
+            setEventDialogFields(view);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
 
         // we don't want to include the rsvp button if we've already rsvp'd or if user is host
         if (!rsvped && !eventHost.equals(currentUser)) {
@@ -56,9 +107,21 @@ public class EventItemDialogFragment extends DialogFragment {
             });
         }
 
-        builder.setNeutralButton("Back", (dialog, id) -> {
-            Objects.requireNonNull(EventItemDialogFragment.this.getDialog()).cancel();
+        // set share btn
+        shareBtn.setOnClickListener(v -> {
+            Log.e("testing button", "test");
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            String shareString = String.format("Check out this event I'm attending -- I'm going to %s on %s. Details are: %s. " +
+                    "Learn more and download PocketScouts!",
+                    title, date, description);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, shareString);
+            sendIntent.setType("text/plain");
+
+            Intent shareIntent = Intent.createChooser(sendIntent, "Event from PocketScouts");
+            startActivity(shareIntent);
         });
+
+        builder.setNeutralButton("Back", (dialog, id) -> Objects.requireNonNull(EventItemDialogFragment.this.getDialog()).cancel());
         return builder.create();
     }
 
@@ -78,25 +141,31 @@ public class EventItemDialogFragment extends DialogFragment {
                 });
     }
 
-    private void setEventDialogFields(View view) {
-        ImageView imageView = view.findViewById(R.id.eventDialogImageView);
-        TextView title = view.findViewById(R.id.eventDialogTitle);
-        TextView date = view.findViewById(R.id.eventDialogDate);
-        TextView limit = view.findViewById(R.id.eventDialogLimit);
-        TextView description = view.findViewById(R.id.eventDialogDescription);
-        TextView eventStatusText = view.findViewById(R.id.eventStatus);
+    private void setConfirmedLimit() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        AggregateQuery countQuery = db.collection("event_confirmation").whereEqualTo("event_id", eventId).count();
 
-        Bundle bundle = getArguments();
-        assert bundle != null;
-        title.setText(bundle.getString("name"));
-        date.setText(String.format("%s", bundle.getString("date")));
-        limit.setText(String.format("%d people", bundle.getLong("limit")));
-        description.setText(bundle.getString("description"));
-        setHostName(bundle.getString("hostId"), view);
+        countQuery.get(AggregateSource.SERVER).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                signedUp = task.getResult().getCount();
+                Log.e("COUNT", String.valueOf(signedUp));
+                limitView.setText(String.format("%d/%d people", signedUp, limit));
 
-        rsvped = bundle.getBoolean("rsvped");
-        eventId = bundle.getString("id");
-        eventHost = bundle.getString("hostId");
+                if (signedUp > limit) {
+                    eventStatusText.setText(R.string.event_limit_reached);
+                    eventStatusText.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void setEventDialogFields(View view) throws ParseException {
+        titleView.setText(title);
+        dateView.setText(String.format("%s", date));
+        setConfirmedLimit();
+        detailsView.setText(description);
+        setHostName(eventHost, view);
+
         if (rsvped) {
             eventStatusText.setText(R.string.user_rsvp_event);
             eventStatusText.setVisibility(View.VISIBLE);
@@ -105,7 +174,13 @@ public class EventItemDialogFragment extends DialogFragment {
             eventStatusText.setText(R.string.user_host_of_event);
             eventStatusText.setVisibility(View.VISIBLE);
         }
-        iconType = bundle.getLong("icon_type");
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd hh:mm:ss z yyyy", Locale.ENGLISH);
+        Date eventDate = formatter.parse(date);
+        assert eventDate != null;
+        if (eventDate.before(new Date(System.currentTimeMillis()))) {
+            eventStatusText.setText(R.string.old_event);
+            eventStatusText.setVisibility(View.VISIBLE);
+        }
         imageView.setImageResource(IconAssignment.getIconMipMapID(iconType));
     }
 }
