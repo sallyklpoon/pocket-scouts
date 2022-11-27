@@ -9,15 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.model.LatLng;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.Timestamp;
@@ -38,7 +41,6 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 public class CreateEventFragment extends Fragment {
     MainActivity mainActivity;
-    private LocationManager locationManager;
     EditText editText;
     View createEventFragment;
     private FirebaseAuth firebaseAuth;
@@ -46,6 +48,7 @@ public class CreateEventFragment extends Fragment {
     Context context;
     private double eventLatitude = 1;
     private double eventLongitude = 1;
+    private int iconSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +74,7 @@ public class CreateEventFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         assert mainActivity != null;
 
-        locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         eventLatitude = location.getLatitude();
         eventLongitude = location.getLongitude();
@@ -80,24 +83,45 @@ public class CreateEventFragment extends Fragment {
 
         renderMap();
 
-        // Search Address listener
-        Button searchAddressBtn = view.findViewById(R.id.findBtn);
-        searchAddressBtn.setOnClickListener(new View.OnClickListener() {
+        // Set Spinner elements and override methods
+        String[] iconDescriptions = getResources().getStringArray(R.array.icon_list);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+                R.layout.list_item, iconDescriptions);
+        Spinner iconSpinner = view.findViewById(R.id.iconSpinner);
+        iconSpinner.setAdapter(adapter);
+
+        ImageView icon = view.findViewById(R.id.iconView);
+        icon.setImageResource(R.drawable.events_bike);
+
+        iconSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onClick(View view) {
-                String address = editText.getText().toString();
-                findAddress(address);
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
+                                       int position, long id) {
+                iconSelected = position;
+                int currentSelection = IconAssignment.getIconID(position);
+                icon.setImageResource(currentSelection);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                iconSelected = 0;
             }
         });
-        Button saveChanges = createEventFragment.findViewById(R.id.eventsSaveChangesBtn);
-        saveChanges.setOnClickListener(e -> {
-            createEvent();
+
+        // Search Address listener
+        Button searchAddressBtn = view.findViewById(R.id.findBtn);
+        searchAddressBtn.setOnClickListener(view1 -> {
+            String address = editText.getText().toString();
+            findAddress(address);
         });
+
+        Button saveChanges = createEventFragment.findViewById(R.id.eventsSaveChangesBtn);
+        saveChanges.setOnClickListener(e -> createEvent());
 
     }
 
     public void createEvent() {
-        String hostId = firebaseAuth.getCurrentUser().getUid();
+        String hostId = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         EditText title = createEventFragment.findViewById(R.id.eventTitleInput);
         EditText description = createEventFragment.findViewById(R.id.eventDescriptionTextArea);
         EditText attendeeLimit = createEventFragment.findViewById(R.id.attendeeLimit);
@@ -108,7 +132,7 @@ public class CreateEventFragment extends Fragment {
         eventData.put("name", String.valueOf(Objects.requireNonNull(title.getText())));
         eventData.put("description", String.valueOf(Objects.requireNonNull(description.getText())));
         eventData.put("attendee_limit", Integer.parseInt(Objects.requireNonNull(attendeeLimit.getText().toString())));
-
+        eventData.put("icon_type", iconSelected);
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(date.getYear(), date.getMonth(), date.getDayOfMonth());
@@ -120,7 +144,7 @@ public class CreateEventFragment extends Fragment {
 
         eventData.put("latitude", eventLatitude);
         eventData.put("longitude", eventLongitude);
-
+      
         db.collection("user").document(hostId).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot document = task.getResult();
@@ -160,8 +184,10 @@ public class CreateEventFragment extends Fragment {
 
     private void renderMap() {
         Fragment mapFragment = MapsFragment.newInstance(this.eventLatitude, this.eventLongitude,
-                new ArrayList<Event>(), true);
+                new ArrayList<>(), true);
         getChildFragmentManager().beginTransaction()
                 .replace(R.id.map_frame_layout, mapFragment).commit();
     }
+
+
 }

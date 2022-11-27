@@ -3,6 +3,7 @@ package com.example.termproject;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +35,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -54,6 +57,8 @@ public class ExploreFragment extends Fragment {
     Context context;
     View currentView;
     TextView weatherText;
+    ImageView weatherIcon;
+    CircularProgressIndicator progressIndicator;
 
     private RecyclerView eventsRecycler;
     private ArrayList<Event> events = new ArrayList<>();
@@ -72,6 +77,8 @@ public class ExploreFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_explore, container, false);
         eventsRecycler = view.findViewById(R.id.exploreRecyclerView);
+        progressIndicator = view.findViewById(R.id.exploreProgressIndicator);
+        progressIndicator.setVisibility(View.VISIBLE);
         context = getContext();
         db = FirebaseFirestore.getInstance();
 
@@ -92,7 +99,10 @@ public class ExploreFragment extends Fragment {
 
         locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
         locationListener = new MyLocationListener();
-        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Criteria criteria = new Criteria();
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        Location location = locationManager.getLastKnownLocation(provider);
 
         searchLatitude = location.getLatitude();
         searchLongitude = location.getLongitude();
@@ -104,6 +114,7 @@ public class ExploreFragment extends Fragment {
 
         // Setup Weather
         weatherText = view.findViewById(R.id.weatherText);
+        weatherIcon = view.findViewById(R.id.weatherImage);
         queue = Volley.newRequestQueue(requireActivity());
 
         if (mainActivity.fineLocationPermission && mainActivity.coarseLocationPermission) {
@@ -123,6 +134,7 @@ public class ExploreFragment extends Fragment {
         }
     }
 
+
     private class AsyncTaskRunner extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -135,8 +147,14 @@ public class ExploreFragment extends Fragment {
                 try {
                     JSONObject jsonObjectSys = response.getJSONObject("current_weather");
                     double temp = jsonObjectSys.getDouble("temperature");
-                    String output = "Current Temperature: " + temp + "°C";
+                    String output = temp + "°C";
                     weatherText.setText(output);
+                    if (temp < 13) {
+                        weatherIcon.setImageResource(R.drawable.weather_cold);
+                    } else {
+                        weatherIcon.setImageResource(R.drawable.weather_hot);
+                    }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -189,7 +207,7 @@ public class ExploreFragment extends Fragment {
     }
 
     private void renderMap() {
-        if (!isAdded()) return;
+        if (!isAdded())  return;
         // Inflate mapFragment with searched location
         Fragment mapFragment = MapsFragment.newInstance(this.searchLatitude, this.searchLongitude, this.events, false);
         getChildFragmentManager().beginTransaction()
@@ -197,6 +215,8 @@ public class ExploreFragment extends Fragment {
     }
 
     private void retrieveEventsAndMap() {
+        progressIndicator.setVisibility(View.VISIBLE);
+
         events = new ArrayList<>();
         Date currentDate = new Date(System.currentTimeMillis());
         Query futureEventsInLocationQuery = db.collection("event")
@@ -218,9 +238,8 @@ public class ExploreFragment extends Fragment {
                     if (ratings == null) {
                         ratings = new ArrayList<String>();
                     }
-
-                    Event event = new Event(id, name, description, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
-
+                    Long iconType = (Long) document.get("icon_type");
+                    Event event = new Event(id, name, description, iconType, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
                     if (eventInLocationRange(event)) {
                         events.add(event);
                     }
@@ -228,7 +247,7 @@ public class ExploreFragment extends Fragment {
                 loadUserEventCardsRecycler();
                 renderMap();
             } else {
-                Log.e("EVENT ERRORED OUT.", task.getException().getMessage());
+                Log.e("EVENT ERROR OUT.", Objects.requireNonNull(task.getException()).getMessage());
                 Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -249,8 +268,8 @@ public class ExploreFragment extends Fragment {
     }
 
     private void loadUserEventCardsRecycler() {
+        progressIndicator.setVisibility(View.GONE);
         if (events.size() > 0) {
-            Log.e("WOW EVENTS", this.events.toString());
             recyclerAdapter adapter = new recyclerAdapter(this.events, this);
             RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context);
             eventsRecycler.setLayoutManager(layoutManager);

@@ -1,6 +1,7 @@
 package com.example.termproject;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.*;
@@ -9,8 +10,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -39,6 +43,8 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         CircleImageView imageView;
         Fragment fragment;
         MaterialRatingBar ratingBar;
+        MaterialCardView eventCard;
+        FirebaseFirestore db;
 
         public MyViewHolder(final View view) {
             super(view);
@@ -46,12 +52,16 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             descriptionText = view.findViewById(R.id.eventDescriptionText);
             imageView = view.findViewById(R.id.eventImageView);
             ratingBar = view.findViewById(R.id.rating_bar);
+            eventCard = view.findViewById(R.id.eventCardLayout);
+
+            Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.event_fade_in);
+            eventCard.setAnimation(animation);
+            db = FirebaseFirestore.getInstance();
             view.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
 
             // check if the event has already been rsvp'd to before rendering modal
             db.collection("event_confirmation")
@@ -61,13 +71,13 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
                     .addOnCompleteListener(complete -> {
                         EventItemDialogFragment dialog = new EventItemDialogFragment();
                         // if results is empty, we haven't rsvp'd yet so render the rsvp button
-                        Bundle bundle = buildEventBundle(event, !complete.getResult().isEmpty());
+                        Bundle bundle = buildEventBundle(!complete.getResult().isEmpty());
                         dialog.setArguments(bundle);
                         dialog.show(fragment.getChildFragmentManager(), "event_details");
                     });
         }
 
-        private Bundle buildEventBundle(Event e, boolean rsvped) {
+        private Bundle buildEventBundle(boolean rsvped) {
             Bundle bundle = new Bundle();
             bundle.putString("name", event.getName());
             bundle.putString("date", event.getDate().toString());
@@ -78,6 +88,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             bundle.putString("hostId", event.getHostId());
             bundle.putDouble("hostRating", event.getHostRating());
             bundle.putBoolean("alreadyRated", event.getRatings().contains(FirebaseAuth.getInstance().getUid()));
+            bundle.putLong("icon_type", event.getIconType());
             return bundle;
         }
 
@@ -91,8 +102,6 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
     }
 
 
-
-
     @NonNull
     @Override
     public recyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -102,12 +111,22 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        String currentUser = FirebaseAuth.getInstance().getUid();
         Event event = eventList.get(position);
+
         holder.setEvent(event);
         holder.setFragment(fragment);
+        if (event.getHostId().equals(currentUser)) {
+            int color = ContextCompat.getColor(holder.eventCard.getContext(), R.color.purple_light);
+            holder.eventCard.setBackgroundColor(color);
+        }
+        if (event.getDate().before(new Date(System.currentTimeMillis()))) {
+            holder.eventCard.setChecked(true);
+        }
         holder.titleText.setText(event.getName());
         holder.ratingBar.setRating(event.getHostRating().floatValue());
         holder.descriptionText.setText(event.getDescription());
+        holder.imageView.setImageResource(IconAssignment.getIconMipMapID(event.getIconType()));
     }
 
     @Override

@@ -2,6 +2,7 @@
 <resources>
     <color name="purple_light">#F2E8FB</color>
     <color name="orange_light">#FFF9EE</color>
+    <color name="orange_100">#FFDCA9</color>
     <color name="orange_200">#FF9E00</color>
     <color name="orange_500">#FF6D00</color>
     <color name="red_700">#F22903</color>
@@ -13,4 +14,5 @@
     <color name="red_google">#e74c3c</color>
     <color name="red_light">#f8c9c4</color>
     <color name="hint_colour">#757575</color>
+    <color name="light_gray">#D3D3D3</color>
 </resources>

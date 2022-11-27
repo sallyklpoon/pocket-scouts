@@ -18,6 +18,7 @@
         android:layout_gravity="center"
         android:textStyle="bold"
         android:textSize="40sp"
+        android:textColor="@color/orange_500"
         android:paddingHorizontal="40dp"
         android:text="@string/welcome_back" />
 
@@ -71,7 +72,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:checked="true"
-                app:thumbTint="@color/red_google"
+                android:color="@color/purple_700"
                 app:trackTint="@color/red_light"
                 android:layout_gravity="start"
                 android:text="@string/remember_me"/>
@@ -98,7 +99,7 @@
             android:layout_marginTop="30dp"
             android:paddingHorizontal="80dp"
             android:textColor="#fff"
-            android:backgroundTint="@color/red_google"
+            android:backgroundTint="@color/orange_500"
             android:layout_gravity="center"
             />
     </LinearLayout>

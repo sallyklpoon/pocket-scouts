@@ -23,6 +23,28 @@
             tools:layout_editor_absoluteX="52dp"
             tools:layout_editor_absoluteY="55dp" />
 
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/eventsProgressIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            />
+
+
+        <TextView
+            android:id="@+id/no_events_eventsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/no_events"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:padding="50dp"
+            android:visibility="gone"
+            />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventPageRecyclerView"
             android:layout_width="match_parent"
@@ -30,15 +52,4 @@
 
 
     </LinearLayout>
-    <!-- Nav Bar fragment -->
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/event_nav_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent" />
 </FrameLayout>

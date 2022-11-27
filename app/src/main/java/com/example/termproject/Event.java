@@ -18,9 +18,9 @@ public class Event implements Parcelable {
     private Long attendeeLimit;
     private Double hostRating;
     private List<String> ratings;
+    private Long iconType;
 
-
-    public Event(String id, String name, String description,
+    public Event(String id, String name, String description, Long iconType,
                  Date date, Double latitude, Double longitude, String hostId, Long limit, Double hostRating, List<String> ratings) {
         this.id = id;
         this.name = name;
@@ -32,6 +32,7 @@ public class Event implements Parcelable {
         this.attendeeLimit = limit;
         this.hostRating = hostRating;
         this.ratings = ratings;
+        this.iconType = iconType;
     }
 
     public String getId() {
@@ -63,6 +64,8 @@ public class Event implements Parcelable {
     }
 
     public Double getHostRating() { return hostRating;}
+  
+    public Long getIconType() {return iconType;}
 
     public Long getAttendeeLimit() {
         return attendeeLimit;
@@ -95,6 +98,7 @@ public class Event implements Parcelable {
         dest.writeValue(this.attendeeLimit);
         dest.writeValue(this.hostRating);
         dest.writeValue(this.ratings);
+        dest.writeValue(this.iconType);
     }
 
     public void readFromParcel(Parcel source) {
@@ -109,6 +113,7 @@ public class Event implements Parcelable {
         this.attendeeLimit = (Long) source.readValue(Long.class.getClassLoader());
         this.hostRating = (Double) source.readValue(Double.class.getClassLoader());
         this.ratings = (List<String>) source.readValue(List.class.getClassLoader());
+        this.iconType = (Long) source.readValue(Long.class.getClassLoader());
     }
 
     protected Event(Parcel in) {
@@ -123,6 +128,7 @@ public class Event implements Parcelable {
         this.attendeeLimit = (Long) in.readValue(Long.class.getClassLoader());
         this.hostRating = (Double) in.readValue(Double.class.getClassLoader());
         this.ratings = (List<String>) in.readValue(List.class.getClassLoader());
+        this.iconType = (Long) in.readValue(Long.class.getClassLoader());
     }
 
     public static final Creator<Event> CREATOR = new Creator<Event>() {
