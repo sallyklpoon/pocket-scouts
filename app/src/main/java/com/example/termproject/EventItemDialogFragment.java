@@ -63,13 +63,13 @@ public class EventItemDialogFragment extends DialogFragment {
     TextView limitView;
     TextView detailsView;
     TextView eventStatusText;
+    TextView ratingLabel;
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         context = getContext();
         db = FirebaseFirestore.getInstance();
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.AlertDialogTheme);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.event_list_item_dialog, null);
       
@@ -80,6 +80,7 @@ public class EventItemDialogFragment extends DialogFragment {
         limitView = view.findViewById(R.id.eventDialogLimit);
         detailsView = view.findViewById(R.id.eventDialogDescription);
         eventStatusText = view.findViewById(R.id.eventStatus);
+        ratingLabel = view.findViewById(R.id.rating_label);
 
         // Assign bundle variables
         Bundle bundle = getArguments();
@@ -126,12 +127,13 @@ public class EventItemDialogFragment extends DialogFragment {
                         });
             });
         } else if (!alreadyRated) {
+            ratingLabel.setVisibility(View.VISIBLE);
             ratingBar.setVisibility(View.VISIBLE);
             builder.setPositiveButton("Rate", (dialog, id) -> {
                 Map<String, Object> confirmation = new HashMap<>();
                 eventDoc.update("ratings", FieldValue.arrayUnion(currentUser)).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        DocumentReference userDoc = db.collection("user").document(hostId);
+                        DocumentReference userDoc = db.collection("user").document(eventHost);
                         userDoc.get().addOnSuccessListener(documentSnapshot -> {
                             Double rating = (Double) documentSnapshot.get("rating");
                             Double difference = ratingBar.getRating() - rating;
