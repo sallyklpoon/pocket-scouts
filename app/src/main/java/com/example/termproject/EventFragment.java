@@ -140,8 +140,8 @@ public class EventFragment extends Fragment {
         Double longitude = (Double) document.get("longitude");
         String hostId = (String) document.get("host_id");
         Long attendeeLimit = (Long) document.get("attendee_limit");
-        Double hostRating = (Double) document.get("hostRating");
-        List<String> ratings = (List<String>)  document.get("ratings");
+        Double hostRating = document.getDouble("hostRating");
+        List<String> ratings = (List<String>) document.get("ratings");
         if (ratings == null) {
            ratings = new ArrayList<String>();
         }
