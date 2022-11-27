@@ -186,4 +186,41 @@
             android:layout_marginTop="20dp"
             />
     </LinearLayout>
+    <TextView
+        android:id="@+id/eventDialogDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="date"
+        android:textSize="18sp"
+        android:padding="5sp"
+        />
+
+    <TextView
+        android:id="@+id/eventDialogLimit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="Attendee Limit"
+        android:textSize="18sp"
+        android:padding="5sp"
+        />
+    <TextView
+        android:id="@+id/eventDialogDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:text="description"
+        android:textSize="18sp"
+        android:padding="5sp"
+        />
+
+    <me.zhanghai.android.materialratingbar.MaterialRatingBar
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialRatingBar.RatingBar"
+        android:numStars="5"
+        android:stepSize="0.1"
+        android:visibility="gone"/>
 </LinearLayout>

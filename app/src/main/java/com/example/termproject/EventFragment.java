@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -99,10 +100,13 @@ public class EventFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
+                    Double hostRating = (Double) document.get("hostRating");
+                    List<String> ratings = (List<String>)  document.get("ratings");
+                    if (ratings == null) {
+                        ratings = new ArrayList<String>();
+                    }
                     Long iconType = (Long) document.get("icon_type");
-
-                    Event event = new Event(id, name, description, iconType, date, latitude,
-                            longitude, hostId, attendeeLimit);
+                    Event event = new Event(id, name, description, iconType, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
                     userEvents.add(event);
                 }
             } else {
@@ -136,10 +140,13 @@ public class EventFragment extends Fragment {
         Double longitude = (Double) document.get("longitude");
         String hostId = (String) document.get("host_id");
         Long attendeeLimit = (Long) document.get("attendee_limit");
+        Double hostRating = (Double) document.get("hostRating");
+        List<String> ratings = (List<String>)  document.get("ratings");
+        if (ratings == null) {
+           ratings = new ArrayList<String>();
+        }
         Long iconType = (Long) document.get("icon_type");
-
-        return new Event(id, name, description, iconType, date, latitude,
-                longitude, hostId, attendeeLimit);
+        return new Event(id, name, description, iconType, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
     }
 
     private void loadUserEventCardsRecycler(View view) {

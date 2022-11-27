@@ -49,4 +49,7 @@ dependencies {
 
     // dependency for circular imageview
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+
+    // dependency for material rating bar
+    implementation 'me.zhanghai.android.materialratingbar:library:1.4.0'
 }

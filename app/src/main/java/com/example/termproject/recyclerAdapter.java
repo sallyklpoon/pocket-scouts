@@ -19,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
 
 public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyViewHolder> {
     private final ArrayList<Event> eventList;
@@ -41,6 +42,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
         TextView descriptionText;
         CircleImageView imageView;
         Fragment fragment;
+        MaterialRatingBar ratingBar;
         MaterialCardView eventCard;
         FirebaseFirestore db;
 
@@ -49,6 +51,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             titleText = view.findViewById(R.id.eventTitleText);
             descriptionText = view.findViewById(R.id.eventDescriptionText);
             imageView = view.findViewById(R.id.eventImageView);
+            ratingBar = view.findViewById(R.id.rating_bar);
             eventCard = view.findViewById(R.id.eventCardLayout);
 
             Animation animation = AnimationUtils.loadAnimation(view.getContext(), R.anim.event_fade_in);
@@ -67,7 +70,6 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
                     .get()
                     .addOnCompleteListener(complete -> {
                         EventItemDialogFragment dialog = new EventItemDialogFragment();
-
                         // if results is empty, we haven't rsvp'd yet so render the rsvp button
                         Bundle bundle = buildEventBundle(!complete.getResult().isEmpty());
                         dialog.setArguments(bundle);
@@ -84,6 +86,8 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             bundle.putBoolean("rsvped", rsvped);
             bundle.putString("id", event.getId());
             bundle.putString("hostId", event.getHostId());
+            bundle.putDouble("hostRating", event.getHostRating());
+            bundle.putBoolean("alreadyRated", event.getRatings().contains(FirebaseAuth.getInstance().getUid()));
             bundle.putLong("icon_type", event.getIconType());
             return bundle;
         }
@@ -120,6 +124,7 @@ public class recyclerAdapter extends RecyclerView.Adapter<recyclerAdapter.MyView
             holder.eventCard.setChecked(true);
         }
         holder.titleText.setText(event.getName());
+        holder.ratingBar.setRating(event.getHostRating().floatValue());
         holder.descriptionText.setText(event.getDescription());
         holder.imageView.setImageResource(IconAssignment.getIconMipMapID(event.getIconType()));
     }

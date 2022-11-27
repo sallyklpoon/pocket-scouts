@@ -1,6 +1,7 @@
 package com.example.termproject;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +15,19 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldPath;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.AggregateQuery;
 import com.google.firebase.firestore.AggregateSource;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,9 +37,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import me.zhanghai.android.materialratingbar.MaterialRatingBar;
+
 public class EventItemDialogFragment extends DialogFragment {
     boolean rsvped;
     String eventId;
+    Double hostRating;
+    Context context;
+    FirebaseFirestore db;
+    boolean alreadyRated;
     String currentUser;
     String eventHost;
     Long iconType;
@@ -52,9 +67,13 @@ public class EventItemDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        context = getContext();
+        db = FirebaseFirestore.getInstance();
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.AlertDialogTheme);
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.event_list_item_dialog, null);
-
+      
+        MaterialRatingBar ratingBar = view.findViewById(R.id.rating_bar);
         imageView = view.findViewById(R.id.eventDialogImageView);
         titleView = view.findViewById(R.id.eventDialogTitle);
         dateView = view.findViewById(R.id.eventDialogDate);
@@ -74,6 +93,7 @@ public class EventItemDialogFragment extends DialogFragment {
         eventId = bundle.getString("id");
         eventHost = bundle.getString("hostId");
         iconType = bundle.getLong("icon_type");
+        alreadyRated = bundle.getBoolean("alreadyRated");
 
         currentUser = FirebaseAuth.getInstance().getUid();
         shareBtn = view.findViewById(R.id.shareBtn);
@@ -81,20 +101,20 @@ public class EventItemDialogFragment extends DialogFragment {
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireActivity(), R.style.AlertDialogTheme);
         builder.setView(view);
 
+        DocumentReference eventDoc = db.collection("event").document(eventId);
+
         try {
             setEventDialogFields(view);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-
         // we don't want to include the rsvp button if we've already rsvp'd or if user is host
         if (!rsvped && !eventHost.equals(currentUser)) {
             builder.setPositiveButton("RSVP", (dialog, id) -> {
                 Map<String, Object> confirmation = new HashMap<>();
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 confirmation.put("event_id", eventId);
-                confirmation.put("user_id", FirebaseAuth.getInstance().getUid());
+                confirmation.put("user_id", currentUser);
                 confirmation.put("attended", false);
                 db.collection("event_confirmation").add(confirmation)
                         .addOnSuccessListener(task -> {
@@ -104,6 +124,29 @@ public class EventItemDialogFragment extends DialogFragment {
                             Toast.makeText(view.getContext(), "Error in RSVPing to the event. Please try again later.", Toast.LENGTH_SHORT).show();
                             Log.d("Event Creation", String.format("Failed to create Event %s.", eventId));
                         });
+            });
+        } else if (!alreadyRated) {
+            ratingBar.setVisibility(View.VISIBLE);
+            builder.setPositiveButton("Rate", (dialog, id) -> {
+                Map<String, Object> confirmation = new HashMap<>();
+                eventDoc.update("ratings", FieldValue.arrayUnion(currentUser)).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentReference userDoc = db.collection("user").document(hostId);
+                        userDoc.get().addOnSuccessListener(documentSnapshot -> {
+                            Double rating = (Double) documentSnapshot.get("rating");
+                            Double difference = ratingBar.getRating() - rating;
+                            Double increment = 0.2 * difference;
+                            userDoc.update("rating", FieldValue.increment(increment)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(context, "Rating added", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        });
+                    } else {
+                        Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             });
         }
 

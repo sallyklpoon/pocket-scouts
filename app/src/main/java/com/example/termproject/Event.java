@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Date;
+import java.util.List;
 
 public class Event implements Parcelable {
 
@@ -15,11 +16,12 @@ public class Event implements Parcelable {
     private Double longitude;
     private String hostId;
     private Long attendeeLimit;
+    private Double hostRating;
+    private List<String> ratings;
     private Long iconType;
 
-
     public Event(String id, String name, String description, Long iconType,
-                 Date date, Double latitude, Double longitude, String hostId, Long limit) {
+                 Date date, Double latitude, Double longitude, String hostId, Long limit, Double hostRating, List<String> ratings) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -28,6 +30,8 @@ public class Event implements Parcelable {
         this.longitude = longitude;
         this.hostId = hostId;
         this.attendeeLimit = limit;
+        this.hostRating = hostRating;
+        this.ratings = ratings;
         this.iconType = iconType;
     }
 
@@ -59,10 +63,22 @@ public class Event implements Parcelable {
         return hostId;
     }
 
+    public Double getHostRating() { return hostRating;}
+  
     public Long getIconType() {return iconType;}
 
     public Long getAttendeeLimit() {
         return attendeeLimit;
+    }
+
+    public List getRatings() { return ratings;}
+
+    public void setTitle(String title) {
+        this.name = title;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
@@ -80,6 +96,8 @@ public class Event implements Parcelable {
         dest.writeValue(this.longitude);
         dest.writeString(this.hostId);
         dest.writeValue(this.attendeeLimit);
+        dest.writeValue(this.hostRating);
+        dest.writeValue(this.ratings);
         dest.writeValue(this.iconType);
     }
 
@@ -93,6 +111,8 @@ public class Event implements Parcelable {
         this.longitude = (Double) source.readValue(Double.class.getClassLoader());
         this.hostId = source.readString();
         this.attendeeLimit = (Long) source.readValue(Long.class.getClassLoader());
+        this.hostRating = (Double) source.readValue(Double.class.getClassLoader());
+        this.ratings = (List<String>) source.readValue(List.class.getClassLoader());
         this.iconType = (Long) source.readValue(Long.class.getClassLoader());
     }
 
@@ -106,6 +126,8 @@ public class Event implements Parcelable {
         this.longitude = (Double) in.readValue(Double.class.getClassLoader());
         this.hostId = in.readString();
         this.attendeeLimit = (Long) in.readValue(Long.class.getClassLoader());
+        this.hostRating = (Double) in.readValue(Double.class.getClassLoader());
+        this.ratings = (List<String>) in.readValue(List.class.getClassLoader());
         this.iconType = (Long) in.readValue(Long.class.getClassLoader());
     }
 

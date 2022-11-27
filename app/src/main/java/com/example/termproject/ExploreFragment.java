@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import androidx.fragment.app.Fragment;
@@ -232,11 +233,13 @@ public class ExploreFragment extends Fragment {
                     Double longitude = (Double) document.get("longitude");
                     String hostId = (String) document.get("host_id");
                     Long attendeeLimit = (Long) document.get("attendee_limit");
+                    Double hostRating = (Double) document.get("hostRating");
+                    List<String> ratings = (List<String>)  document.get("ratings");
+                    if (ratings == null) {
+                        ratings = new ArrayList<String>();
+                    }
                     Long iconType = (Long) document.get("icon_type");
-
-                    Event event = new Event(id, name, description, iconType,
-                            date, latitude, longitude, hostId, attendeeLimit);
-
+                    Event event = new Event(id, name, description, iconType, date, latitude, longitude, hostId, attendeeLimit, hostRating, ratings);
                     if (eventInLocationRange(event)) {
                         events.add(event);
                     }
