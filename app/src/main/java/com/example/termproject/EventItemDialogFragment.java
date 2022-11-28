@@ -135,7 +135,7 @@ public class EventItemDialogFragment extends DialogFragment {
                     if (task.isSuccessful()) {
                         DocumentReference userDoc = db.collection("user").document(eventHost);
                         userDoc.get().addOnSuccessListener(documentSnapshot -> {
-                            Double rating = (Double) documentSnapshot.get("rating");
+                            Double rating = documentSnapshot.getDouble("rating");
                             Double difference = ratingBar.getRating() - rating;
                             Double increment = 0.2 * difference;
                             userDoc.update("rating", FieldValue.increment(increment)).addOnSuccessListener(new OnSuccessListener<Void>() {
