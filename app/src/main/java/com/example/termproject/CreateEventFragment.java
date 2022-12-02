@@ -139,8 +139,8 @@ public class CreateEventFragment extends Fragment {
         eventData.put("date", new Timestamp(calendar.getTime()));
 
         // Simulate event lat long, should be changed if Google API can be used
-        eventLatitude = ThreadLocalRandom.current().nextDouble(-90, 90);
-        eventLongitude = ThreadLocalRandom.current().nextDouble(-180, 180);
+//        eventLatitude = ThreadLocalRandom.current().nextDouble(-90, 90);
+//        eventLongitude = ThreadLocalRandom.current().nextDouble(-180, 180);
 
         eventData.put("latitude", eventLatitude);
         eventData.put("longitude", eventLongitude);
@@ -171,15 +171,26 @@ public class CreateEventFragment extends Fragment {
         // but broke student problems, so we will not be implementing the
         // tool here, but are mocking the search to Tokyo.
 
-        LatLng tokyo = new LatLng(35.6812, 139.7671);
-        LatLng vancouver = new LatLng(49.2820, -123.1171);
+        String[] latlong = query.split("; ", 2);
+        try {
+            Double queryLatitude = Double.parseDouble(latlong[0]);
+            Double queryLongitude = Double.parseDouble(latlong[1]);
 
-        LatLng queryLocation = (query.equals("Tokyo"))? tokyo : vancouver;
+            LatLng tokyo = new LatLng(35.6812, 139.7671);
+            LatLng vancouver = new LatLng(49.2820, -123.1171);
 
-        eventLatitude = queryLocation.latitude;
-        eventLongitude = queryLocation.longitude;
+            LatLng queryLocation = (query.equals("Tokyo"))? tokyo : vancouver;
 
-        renderMap();
+            eventLatitude = queryLatitude;
+            eventLongitude = queryLongitude;
+
+            LatLng queried = new LatLng(eventLatitude, eventLongitude);
+
+            renderMap();
+        } catch (Exception e) {
+            Toast.makeText(context, "Something went wrong. Input coordinates according to address hint.", Toast.LENGTH_SHORT).show();
+
+        }
     }
 
     private void renderMap() {
